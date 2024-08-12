@@ -1,11 +1,11 @@
 package com.stackedsuccess.tetriminos;
 
-public class IShape extends Tetrimino {
-    public IShape() {
+public class OShape extends Tetrimino {
+    public OShape() {
         layout = new int[][] {
                 {0,0,0,0},
-                {1,1,1,1},
-                {0,0,0,0},
+                {0,1,1,0},
+                {0,1,1,0},
                 {0,0,0,0}
         };
         width = 4;

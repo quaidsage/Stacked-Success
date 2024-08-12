@@ -25,7 +25,12 @@ public class GameControls {
         controls.put(Action.PAUSE, KeyCode.ESCAPE);
     }
 
-    /** Assigns action to key, allowing rebinding of controls. */
+    /**
+     * Assigns action to key, allowing rebinding of controls.
+     *
+     * @param action the Action to bind the key to
+     * @param key the KeyCode that will perform the bound action
+     */
     public void setControl(Action action, KeyCode key) { controls.put(action, key); }
 
     public Action getAction(KeyEvent event) {

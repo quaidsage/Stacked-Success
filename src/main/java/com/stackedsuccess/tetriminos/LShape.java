@@ -1,9 +1,9 @@
 package com.stackedsuccess.tetriminos;
 
-public class TShape extends Tetrimino {
-    public TShape() {
+public class LShape extends Tetrimino {
+    public LShape() {
         layout = new int[][] {
-                {0,1,0},
+                {0,0,1},
                 {1,1,1},
                 {0,0,0}
         };

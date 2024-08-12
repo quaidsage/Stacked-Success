@@ -27,6 +27,7 @@ public class GameBoard {
         frameCount = 0;
     }
 
+    // TODO: Change logic of how speed of current tetrimino is calculated based on frame rate.
     /** Update the state of the board. */
     public void update() {
         frameCount++;
@@ -41,6 +42,7 @@ public class GameBoard {
         printBoard();
     }
 
+    // TODO: Refactor the movement functions to tetrimino object to separate movement from game board.
     /** Move current tetrimino downwards by one cell. */
     public void moveDown() {
         if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos+1)) currentTetrimino.yPos++;;
@@ -56,15 +58,21 @@ public class GameBoard {
         if (!checkCollision(currentTetrimino.xPos+1, currentTetrimino.yPos)) currentTetrimino.xPos++;;
     }
 
+    /** Rotate current tetrimino clockwise. */
     public void rotateClockwise() {
         currentTetrimino.rotateClockwise();
     }
 
+    /** Rotate current tetrimino counter-clockwise. */
     public void rotateCounterClockwise() {
         currentTetrimino.rotateCounterClockwise();
     }
 
-    /** Appends new tetrimino to the game board. */
+    /**
+     * Appends new tetrimino to the game board.
+     *
+     * @param tetrimino the tetrimino to place on the game board.
+     */
     private void placeTetrimino(Tetrimino tetrimino) {
         int[][] layout = tetrimino.getTetriminoLayout();
 
@@ -77,9 +85,9 @@ public class GameBoard {
         }
     }
 
+    // TODO: Remove when visuals are ported to JavaFX.
     /** Debug utility to help separate game board from JavaFX elements. */
     private void printBoard() {
-        // TODO: Completely refactor to be appropriate with future design.
         int[][] layout = currentTetrimino.getTetriminoLayout();
         System.out.println("===| " + frameCount + " |===");
         for (int y = 0; y < board.length; y++) {
@@ -147,6 +155,6 @@ public class GameBoard {
     }
 
     private void clearLines() {
-        // TODO: Add functionality to check whether lines are full, clear lines, and move lines above downwards.
+        // TODO: Add functionality to check whether lines are full, clear lines, and move above lines above downwards.
     }
 }

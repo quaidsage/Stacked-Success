@@ -13,6 +13,7 @@ public class GameScreenController {
 
     GameInstance game = new GameInstance();
 
+    /** On game screen initialization, start game and set window exit handle. */
     @FXML
     public void initialize() {
         Platform.runLater(() -> {
@@ -46,6 +47,10 @@ public class GameScreenController {
         });
     }
 
-    /** Get current stage, accessed by Anchor pane 'node'. */
+    /**
+     * Get current stage, accessed by Anchor pane 'node'.
+     *
+     * @return current stage
+     */
     private Stage getStage() { return (Stage) basePane.getScene().getWindow(); }
 }

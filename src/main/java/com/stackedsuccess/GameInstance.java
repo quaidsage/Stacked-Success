@@ -21,6 +21,7 @@ public class GameInstance {
         isGameOver = false;
     }
 
+    // TODO: Adjust timer period to be appropriate for game speed.
     /** Starts the game instance to periodically update the game board and handle game movement. */
     public void start() {
         gameBoard = new GameBoard();
