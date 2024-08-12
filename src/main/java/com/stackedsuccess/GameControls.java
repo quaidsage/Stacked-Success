@@ -20,6 +20,7 @@ public class GameControls {
         controls.put(Action.MOVE_LEFT, KeyCode.A);
         controls.put(Action.MOVE_RIGHT, KeyCode.D);
         controls.put(Action.MOVE_DOWN, KeyCode.S);
+        controls.put(Action.HARD_DROP, KeyCode.SPACE);
         controls.put(Action.ROTATE_CLOCKWISE, KeyCode.Q);
         controls.put(Action.ROTATE_COUNTERCLOCKWISE, KeyCode.E);
         controls.put(Action.PAUSE, KeyCode.ESCAPE);
@@ -33,6 +34,12 @@ public class GameControls {
      */
     public void setControl(Action action, KeyCode key) { controls.put(action, key); }
 
+    /**
+     * Get associated Action from keyboard input.
+     *
+     * @param event the keyboard event captured
+     * @return the bound action or null if not key not bound.
+     */
     public Action getAction(KeyEvent event) {
         KeyCode key = event.getCode();
         if (controls.containsValue(key)) {

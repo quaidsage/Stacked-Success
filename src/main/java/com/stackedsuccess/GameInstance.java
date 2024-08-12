@@ -12,17 +12,17 @@ public class GameInstance {
     public int score;
 
     private GameControls gameControls;
-    // TODO: Make private after removing temporary JavaFX visuals.
-    public GameBoard gameBoard;
+    private GameBoard gameBoard;
+    private int gameDelay;
     private boolean isPaused;
 
     public GameInstance() {
         score = 0;
+        gameDelay = 10;
         isPaused = false;
         isGameOver = false;
     }
 
-    // TODO: Adjust timer period to be appropriate for game speed.
     /** Starts the game instance to periodically update the game board and handle game movement. */
     public void start() {
         gameBoard = new GameBoard();
@@ -48,17 +48,23 @@ public class GameInstance {
     public void handleInput(KeyEvent key) {
         Action action = gameControls.getAction(key);
         if (action != null) {
-            switch (action) {
-                case MOVE_DOWN -> gameBoard.moveDown();
-                case MOVE_LEFT -> gameBoard.moveLeft();
-                case MOVE_RIGHT -> gameBoard.moveRight();
-                case HARD_DROP -> gameBoard.hardDrop();
-                case ROTATE_CLOCKWISE -> gameBoard.rotateClockwise();
-                case ROTATE_COUNTERCLOCKWISE -> gameBoard.rotateCounterClockwise();
-                case PAUSE -> togglePause();
+            if (updatesTetrimino(action)) {
+                gameBoard.getCurrentTetrimino().updateTetrimino(gameBoard, action);
+            } else {
+                switch (action) {
+                    case PAUSE -> togglePause();
+                }
             }
         }
     }
+
+    /**
+     * Check if the given Action will update tetrimino.
+     *
+     * @param action the action to check
+     * @return whether action will update tetrimino or not
+     */
+    private boolean updatesTetrimino(Action action) { return action == Action.MOVE_LEFT || action == Action.MOVE_RIGHT || action == Action.MOVE_DOWN || action == Action.ROTATE_CLOCKWISE || action == Action.ROTATE_COUNTERCLOCKWISE; }
 
     /** Toggles the game to be paused, halting game updates. */
     public void togglePause() { isPaused = !isPaused; }

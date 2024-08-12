@@ -1,6 +1,5 @@
 package com.stackedsuccess;
 
-import com.stackedsuccess.controllers.GameScreenController;
 import com.stackedsuccess.tetriminos.*;
 
 // This class defines the game board and functionality to check board state
@@ -35,7 +34,7 @@ public class GameBoard {
         // Stagger automatic tetrimino movement based on frame count
         if (frameCount % 100 == 0) {
             if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos + 1)) {
-                moveDown();
+                currentTetrimino.updateTetrimino(this, Action.MOVE_DOWN);
             } else {
                 placeTetrimino(currentTetrimino);
                 clearFullRows();
@@ -45,34 +44,39 @@ public class GameBoard {
         printBoard();
     }
 
-    // TODO: Refactor the movement functions to tetrimino object to separate movement from game board.
-    /** Move current tetrimino downwards by one cell. */
-    public void moveDown() {
-        if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos+1)) currentTetrimino.yPos++;;
-    }
+    /**
+     * Get-type function.
+     *
+     * @return the current tetrimino for game board
+     */
+    public Tetrimino getCurrentTetrimino() { return currentTetrimino; }
 
-    /** Move current tetrimino left by one cell. */
-    public void moveLeft() {
-        if (!checkCollision(currentTetrimino.xPos-1, currentTetrimino.yPos)) currentTetrimino.xPos--;;
-    }
+    /**
+     * Checks if current tetrimino will collide with borders or existing cells.
+     *
+     * @param x the x position to start check for collision
+     * @param y the y position to start check for collision
+     * @return true if current tetrimino will collide with border or existing cells
+     */
+    public boolean checkCollision(int x, int y) {
+        int[][] layout = currentTetrimino.getTetriminoLayout();
+        int newX, newY;
 
-    /** Move current tetrimino right by one cell. */
-    public void moveRight() {
-        if (!checkCollision(currentTetrimino.xPos+1, currentTetrimino.yPos)) currentTetrimino.xPos++;;
-    }
+        for (int layoutY = 0; layoutY < currentTetrimino.getHeight(); layoutY++) {
+            for (int layoutX = 0; layoutX < currentTetrimino.getWidth(); layoutX++) {
+                if (layout[layoutY][layoutX] != 0) {
+                    newX = x + layoutX;
+                    newY = y + layoutY;
 
-    public void hardDrop() {
-        while (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos+1)) currentTetrimino.yPos++;
-    }
+                    // Check for out of bound collisions
+                    if (isOutOfBounds(newX, newY)) return true;
 
-    /** Rotate current tetrimino clockwise. */
-    public void rotateClockwise() {
-        currentTetrimino.rotateClockwise();
-    }
-
-    /** Rotate current tetrimino counter-clockwise. */
-    public void rotateCounterClockwise() {
-        currentTetrimino.rotateCounterClockwise();
+                    // Check for existing tetrimino cells
+                    if (isCellOccupied(newX, newY)) return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -131,34 +135,6 @@ public class GameBoard {
             }
             System.out.println();
         }
-    }
-
-    /**
-     * Checks if current tetrimino will collide with borders or existing cells.
-     *
-     * @param x the x position to start check for collision
-     * @param y the y position to start check for collision
-     * @return true if current tetrimino will collide with border or existing cells
-     */
-    private boolean checkCollision(int x, int y) {
-        int[][] layout = currentTetrimino.getTetriminoLayout();
-        int newX, newY;
-
-        for (int layoutY = 0; layoutY < currentTetrimino.getHeight(); layoutY++) {
-            for (int layoutX = 0; layoutX < currentTetrimino.getWidth(); layoutX++) {
-                if (layout[layoutY][layoutX] != 0) {
-                    newX = x + layoutX;
-                    newY = y + layoutY;
-
-                    // Check for out of bound collisions
-                    if (isOutOfBounds(newX, newY)) return true;
-
-                    // Check for existing tetrimino cells
-                    if (isCellOccupied(newX, newY)) return true;
-                }
-            }
-        }
-       return false;
     }
 
     /**
