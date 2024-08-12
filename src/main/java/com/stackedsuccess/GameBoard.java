@@ -57,11 +57,11 @@ public class GameBoard {
     }
 
     public void rotateClockwise() {
-        // TODO: Add functionality
+        currentTetrimino.rotateClockwise();
     }
 
     public void rotateCounterClockwise() {
-        // TODO: Add functionality
+        currentTetrimino.rotateCounterClockwise();
     }
 
     /** Appends new tetrimino to the game board. */

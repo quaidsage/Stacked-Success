@@ -15,7 +15,17 @@ public abstract class Tetrimino {
 
     public int getHeight() { return height; }
 
-    public void rotateClockwise() {}
+    public void rotateClockwise() {
+        int[][] rotatedLayout = new int[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                rotatedLayout[j][height - i - 1] = layout[i][j];
+            }
+        }
+        layout = rotatedLayout;
+    }
 
-    public void rotateCounterClockwise() {}
+    public void rotateCounterClockwise() {
+        for (int i = 0; i < 3; i ++) rotateClockwise();
+    }
 }
