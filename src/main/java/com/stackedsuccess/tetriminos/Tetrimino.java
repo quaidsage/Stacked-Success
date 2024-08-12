@@ -18,7 +18,7 @@ public abstract class Tetrimino {
      * @param action the movement action on the tetrimino
      */
     public void updateTetrimino(GameBoard gameBoard, Action action) {
-        // TODO: Add tetrimino highlight update
+        // TODO: Add updating of tetrimino preview/highlight here
 
         switch (action) {
             case MOVE_LEFT:

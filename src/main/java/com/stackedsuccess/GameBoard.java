@@ -27,7 +27,6 @@ public class GameBoard {
         frameCount = 0;
     }
 
-    // TODO: Change logic of how speed of current tetrimino is calculated based on frame rate.
     /** Update the state of the board. */
     public void update() {
         frameCount++;

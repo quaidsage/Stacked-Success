@@ -37,7 +37,7 @@ public class GameInstance {
                     gameBoard.update();
                 }
             }
-        },0,10);
+        },0,gameDelay);
     }
 
     /**
@@ -58,15 +58,16 @@ public class GameInstance {
         }
     }
 
+    /** Toggles the game to be paused, halting game updates. */
+    public void togglePause() { isPaused = !isPaused; }
+
+    // TODO: Refactor how an action is determined as a 'movement' action.
     /**
      * Check if the given Action will update tetrimino.
      *
      * @param action the action to check
      * @return whether action will update tetrimino or not
      */
-    private boolean updatesTetrimino(Action action) { return action == Action.MOVE_LEFT || action == Action.MOVE_RIGHT || action == Action.MOVE_DOWN || action == Action.ROTATE_CLOCKWISE || action == Action.ROTATE_COUNTERCLOCKWISE; }
-
-    /** Toggles the game to be paused, halting game updates. */
-    public void togglePause() { isPaused = !isPaused; }
+    private boolean updatesTetrimino(Action action) { return action == Action.MOVE_LEFT || action == Action.MOVE_RIGHT || action == Action.MOVE_DOWN || action == Action.HARD_DROP || action == Action.ROTATE_CLOCKWISE || action == Action.ROTATE_COUNTERCLOCKWISE; }
 
 }
