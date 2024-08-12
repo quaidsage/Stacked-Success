@@ -32,7 +32,7 @@ public class GameInstance {
                     gameBoard.update();
                 }
             }
-        },0,1000);
+        },0,100);
     }
 
     /** Toggles the game to be paused, halting game updates. */
