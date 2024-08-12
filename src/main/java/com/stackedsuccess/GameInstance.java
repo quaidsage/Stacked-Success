@@ -1,5 +1,6 @@
 package com.stackedsuccess;
 
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.util.Timer;
@@ -10,7 +11,8 @@ public class GameInstance {
     public boolean isGameOver;
     public int score;
 
-    private Timer timer;
+    private GameControls gameControls;
+    private GameBoard gameBoard;
     private boolean isPaused;
 
     public GameInstance() {
@@ -21,10 +23,11 @@ public class GameInstance {
 
     /** Starts the game instance to periodically update the game board and handle game movement. */
     public void start() {
-        GameBoard gameBoard = new GameBoard();
+        gameBoard = new GameBoard();
+        gameControls = new GameControls();
 
         // Create timer to regularly update game loop when not paused.
-        timer = new Timer();
+        Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -32,7 +35,26 @@ public class GameInstance {
                     gameBoard.update();
                 }
             }
-        },0,100);
+        },0,10);
+    }
+
+    /**
+     * Handles the key events for current game based on set controls.
+     *
+     * @param key the KeyEvent triggered by user in game window
+     */
+    public void handleInput(KeyEvent key) {
+        Action action = gameControls.getAction(key);
+        if (action != null) {
+            switch (action) {
+                case MOVE_DOWN -> gameBoard.moveDown();
+                case MOVE_LEFT -> gameBoard.moveLeft();
+                case MOVE_RIGHT -> gameBoard.moveRight();
+                case ROTATE_CLOCKWISE -> gameBoard.rotateClockwise();
+                case ROTATE_COUNTERCLOCKWISE -> gameBoard.rotateCounterClockwise();
+                case PAUSE -> togglePause();
+            }
+        }
     }
 
     /** Toggles the game to be paused, halting game updates. */

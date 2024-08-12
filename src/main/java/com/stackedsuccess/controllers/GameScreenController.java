@@ -4,6 +4,7 @@ import com.stackedsuccess.GameInstance;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class GameScreenController {
@@ -18,6 +19,16 @@ public class GameScreenController {
             game.start();
             setWindowCloseHandler(getStage());
         });
+    }
+
+    /**
+     * Sends the key pressed event to game instance to utilise.
+     *
+     * @param event the key event
+     */
+    @FXML
+    public void onKeyPressed(KeyEvent event) {
+        game.handleInput(event);
     }
 
     /**

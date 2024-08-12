@@ -9,7 +9,7 @@ public class GameBoard {
 
     private final int[][] board;
     private Tetrimino currentTetrimino;
-    private int updateCount;
+    private int frameCount;
 
     public GameBoard() {
         board = new int[DEFAULT_BOARD_HEIGHT][DEFAULT_BOARD_WIDTH];
@@ -24,19 +24,44 @@ public class GameBoard {
     /** Setup initial tetrimino pieces and board metrics. */
     private void initializeBoard() {
         currentTetrimino = TetriminoFactory.createRandomTetrimino();
-        updateCount = 0;
+        frameCount = 0;
     }
 
     /** Update the state of the board. */
     public void update() {
-        updateCount++;
-        if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos + 1)) {
-            moveDown();
-        } else {
-            placeTetrimino(currentTetrimino);
-            currentTetrimino = TetriminoFactory.createRandomTetrimino();
+        frameCount++;
+        if (frameCount % 100 == 0) {
+            if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos + 1)) {
+                moveDown();
+            } else {
+                placeTetrimino(currentTetrimino);
+                currentTetrimino = TetriminoFactory.createRandomTetrimino();
+            }
         }
         printBoard();
+    }
+
+    /** Move current tetrimino downwards by one cell. */
+    public void moveDown() {
+        if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos+1)) currentTetrimino.yPos++;;
+    }
+
+    /** Move current tetrimino left by one cell. */
+    public void moveLeft() {
+        if (!checkCollision(currentTetrimino.xPos-1, currentTetrimino.yPos)) currentTetrimino.xPos--;;
+    }
+
+    /** Move current tetrimino right by one cell. */
+    public void moveRight() {
+        if (!checkCollision(currentTetrimino.xPos+1, currentTetrimino.yPos)) currentTetrimino.xPos++;;
+    }
+
+    public void rotateClockwise() {
+        // TODO: Add functionality
+    }
+
+    public void rotateCounterClockwise() {
+        // TODO: Add functionality
     }
 
     /** Appends new tetrimino to the game board. */
@@ -56,7 +81,7 @@ public class GameBoard {
     private void printBoard() {
         // TODO: Completely refactor to be appropriate with future design.
         int[][] layout = currentTetrimino.getTetriminoLayout();
-        System.out.println("===| " + updateCount + " |===");
+        System.out.println("===| " + frameCount + " |===");
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[0].length; x++) {
                 if ((y >= currentTetrimino.yPos && x >= currentTetrimino.xPos && y < currentTetrimino.yPos + currentTetrimino.getHeight() && x < currentTetrimino.xPos + currentTetrimino.getWidth()) && layout[y - currentTetrimino.yPos][x - currentTetrimino.xPos] != 0) {
@@ -71,10 +96,13 @@ public class GameBoard {
         }
     }
 
-    private void moveDown() {
-        currentTetrimino.yPos++;
-    }
-
+    /**
+     * Checks if current tetrimino will collide with borders or existing cells.
+     *
+     * @param x the x position to start check for collision
+     * @param y the y position to start check for collision
+     * @return true if current tetrimino will collide with border or existing cells
+     */
     private boolean checkCollision(int x, int y) {
         int[][] layout = currentTetrimino.getTetriminoLayout();
         int newX, newY;
@@ -96,10 +124,24 @@ public class GameBoard {
        return false;
     }
 
+    /**
+     * Checks if coordinates are outside the bounds of the game board.
+     *
+     * @param x the x position to check
+     * @param y the y position to check
+     * @return true if the coordinates are out of bounds
+     */
     private boolean isOutOfBounds(int x, int y) {
         return x < 0 || x >= board[0].length || y < 0 || y >= board.length;
     }
 
+    /**
+     * Check if coordinates are occupied in the game board.
+     *
+     * @param x the x position to check
+     * @param y the y position to check
+     * @return true if cell is occupied in game board
+     */
     private boolean isCellOccupied(int x, int y) {
         return board[y][x] != 0;
     }
