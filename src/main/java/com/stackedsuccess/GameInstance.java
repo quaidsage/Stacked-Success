@@ -1,7 +1,7 @@
 package com.stackedsuccess;
 
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
+import javafx.scene.text.Text;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,7 +12,8 @@ public class GameInstance {
     public int score;
 
     private GameControls gameControls;
-    private GameBoard gameBoard;
+    // TODO: Make private after removing temporary JavaFX visuals.
+    public GameBoard gameBoard;
     private boolean isPaused;
 
     public GameInstance() {
@@ -51,6 +52,7 @@ public class GameInstance {
                 case MOVE_DOWN -> gameBoard.moveDown();
                 case MOVE_LEFT -> gameBoard.moveLeft();
                 case MOVE_RIGHT -> gameBoard.moveRight();
+                case HARD_DROP -> gameBoard.hardDrop();
                 case ROTATE_CLOCKWISE -> gameBoard.rotateClockwise();
                 case ROTATE_COUNTERCLOCKWISE -> gameBoard.rotateCounterClockwise();
                 case PAUSE -> togglePause();

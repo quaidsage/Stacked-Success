@@ -3,6 +3,7 @@ package com.stackedsuccess.controllers;
 import com.stackedsuccess.GameInstance;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.text.Text;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -10,6 +11,7 @@ import javafx.stage.Stage;
 public class GameScreenController {
 
     @FXML private AnchorPane basePane;
+    @FXML private Text temp;
 
     GameInstance game = new GameInstance();
 
@@ -42,7 +44,7 @@ public class GameScreenController {
             System.out.println("Game ended due to window close. ");
             game.isGameOver = true;
 
-            // TODO: Remove later...
+            // TODO: Remove when more scenes added.
             System.exit(0);
         });
     }

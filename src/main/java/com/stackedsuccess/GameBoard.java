@@ -1,5 +1,6 @@
 package com.stackedsuccess;
 
+import com.stackedsuccess.controllers.GameScreenController;
 import com.stackedsuccess.tetriminos.*;
 
 // This class defines the game board and functionality to check board state
@@ -31,11 +32,13 @@ public class GameBoard {
     /** Update the state of the board. */
     public void update() {
         frameCount++;
+        // Stagger automatic tetrimino movement based on frame count
         if (frameCount % 100 == 0) {
             if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos + 1)) {
                 moveDown();
             } else {
                 placeTetrimino(currentTetrimino);
+                clearFullRows();
                 currentTetrimino = TetriminoFactory.createRandomTetrimino();
             }
         }
@@ -56,6 +59,10 @@ public class GameBoard {
     /** Move current tetrimino right by one cell. */
     public void moveRight() {
         if (!checkCollision(currentTetrimino.xPos+1, currentTetrimino.yPos)) currentTetrimino.xPos++;;
+    }
+
+    public void hardDrop() {
+        while (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos+1)) currentTetrimino.yPos++;
     }
 
     /** Rotate current tetrimino clockwise. */
@@ -83,6 +90,28 @@ public class GameBoard {
                 }
             }
         }
+    }
+
+    /** Clears full rows and moves rows above downwards. */
+    private void clearFullRows() {
+        for (int y = 0; y < board.length; y++) {
+            if (isRowFull(y, board[y])) {
+                shiftRowsDown(y);
+            }
+        }
+    }
+
+    /**
+     * Moves rows above certain row downwards and creates empty line at top of game board.
+     *
+     * @param fromYAxis the start y-axis for moving subsequent rows downward
+     */
+    private void shiftRowsDown(int fromYAxis) {
+        for (int y = fromYAxis; y > 0; y--) {
+            System.arraycopy(board[y - 1], 0, board[y], 0, board[0].length);
+        }
+
+        for (int x = 0; x < board[0].length; x++) board[0][x] = 0;
     }
 
     // TODO: Remove when visuals are ported to JavaFX.
@@ -154,7 +183,19 @@ public class GameBoard {
         return board[y][x] != 0;
     }
 
-    private void clearLines() {
-        // TODO: Add functionality to check whether lines are full, clear lines, and move above lines above downwards.
+
+    /**
+     * Check if the contents within a row are full of tetrimino cells.
+     *
+     * @param rowY the y level or row number of given row
+     * @param row the row to check
+     * @return whether the row is full or not
+     */
+    private boolean isRowFull(int rowY, int[] row) {
+        for (int x = 0; x < row.length; x++) {
+            if (!isCellOccupied(x, rowY)) return false;
+        }
+        return true;
     }
+
 }

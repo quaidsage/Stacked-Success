@@ -8,7 +8,7 @@
     <children>
         <Text layoutX="158.0" layoutY="135.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stacked Success">
          <font>
-            <Font size="40.0" />
+            <Font size="20.0" />
          </font></Text>
     </children>
 </AnchorPane>
