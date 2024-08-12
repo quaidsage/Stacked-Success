@@ -51,6 +51,10 @@ public class Main extends Application {
         stage.setTitle("Stacked Success");
         stage.show();
         root.requestFocus();
+
+        stage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
     }
 
 }

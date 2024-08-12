@@ -4,7 +4,6 @@ import com.stackedsuccess.GameInstance;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class GameScreenController {
@@ -30,6 +29,9 @@ public class GameScreenController {
         stage.setOnCloseRequest(event -> {
             System.out.println("Game ended due to window close. ");
             game.isGameOver = true;
+
+            // TODO: Remove later...
+            System.exit(0);
         });
     }
 
