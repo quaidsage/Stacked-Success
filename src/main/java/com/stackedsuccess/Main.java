@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.stackedsuccess.controllers.GameScreenController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -47,8 +48,13 @@ public class Main extends Application {
         Parent root = scenes.get(SceneName.MENU);
         scene = new Scene(root, 1400, 800);
         stage.setScene(scene);
+        stage.setTitle("Stacked Success");
         stage.show();
         root.requestFocus();
+
+        stage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
     }
 
 }
