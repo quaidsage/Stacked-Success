@@ -22,12 +22,12 @@ If help is needed, please contact allanxu302@gmail.com or xuwastaken on Discord.
 Contributing Guidelines can be found here:
 
 Project acknowledgements: <br />
-Quaid Sage <br />
-Allan Xu <br />
-Maahir Nafis <br />
+Quaid Sage - quaidsage<br />
+Allan Xu - axu732<br />
+Maahir Nafis - MaahirN<br />
 Joel Kendall <br />
-Albert Sun <br />
-Max Chen <br />
+Albert Sun - asun555 <br />
+Max Chen - mche791<br />
 
 MIT License
 
