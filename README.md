@@ -25,7 +25,7 @@ Project acknowledgements: <br />
 Quaid Sage - quaidsage<br />
 Allan Xu - axu732<br />
 Maahir Nafis - MaahirN<br />
-Joel Kendall <br />
+Joel Kendall - joelkendall <br />
 Albert Sun - asun555 <br />
 Max Chen - mche791<br />
 
