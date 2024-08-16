@@ -103,7 +103,16 @@ public class GameBoard {
     for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
       for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
         if (layout[layoutY][layoutX] != 0) {
-          board[tetrimino.yPos + layoutY][tetrimino.xPos + layoutX] = layout[layoutY][layoutX];
+
+          int spawnX = tetrimino.xPos + layoutX;
+          int spawnY = tetrimino.yPos + layoutY;
+          // Check for collision at the spawn location
+          if (isCellOccupied(spawnX, spawnY)) {
+            controller.gameOver();
+            return;
+          }
+
+          board[spawnY][spawnX] = layout[layoutY][layoutX];
         }
       }
     }

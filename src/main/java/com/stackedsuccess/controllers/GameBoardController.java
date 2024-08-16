@@ -168,10 +168,20 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     return (Stage) basePane.getScene().getWindow();
   }
 
+  /**
+   * Updates the score displayed on the game board.
+   *
+   * @param score the current score
+   */
   public void updateScore(int score) {
     Platform.runLater(() -> scoreLabel.setText("Score: " + score));
   }
 
+  /**
+   * Updates the level displayed on the game board.
+   *
+   * @param level the current level
+   */
   public void updateLevel(int level) {
     Platform.runLater(() -> levelLabel.setText("Level: " + level));
   }
@@ -184,5 +194,15 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   public void setNextPieceView(Tetrimino tetrimino) {
     Image image = new Image("/images/" + tetrimino.getClass().getSimpleName() + ".png");
     nextPieceView.setImage(image);
+  }
+
+  /**
+   * Method for handling game over event, when tetriminos spawn and collide into each other. Exits
+   * the game when called
+   */
+  @FXML
+  public void gameOver() {
+    System.out.println("Game over!");
+    System.exit(0);
   }
 }
