@@ -197,7 +197,7 @@ public class GameBoard {
    * @param y the y position to check
    * @return true if the coordinates are out of bounds
    */
-  private boolean isOutOfBounds(int x, int y) {
+  public boolean isOutOfBounds(int x, int y) {
     return x < 0 || x >= board[0].length || y < 0 || y >= board.length;
   }
 
@@ -208,7 +208,7 @@ public class GameBoard {
    * @param y the y position to check
    * @return true if cell is occupied in game board
    */
-  private boolean isCellOccupied(int x, int y) {
+  public boolean isCellOccupied(int x, int y) {
     return board[y][x] != 0;
   }
 

@@ -31,10 +31,10 @@ public abstract class Tetrimino {
         if (!gameBoard.checkCollision(xPos, yPos + 1)) yPos++;
         break;
       case ROTATE_CLOCKWISE:
-        rotateClockwise();
+        if (canRotate(gameBoard, true)) rotateClockwise();
         break;
       case ROTATE_COUNTERCLOCKWISE:
-        rotateCounterClockwise();
+        if (canRotate(gameBoard, false)) rotateCounterClockwise();
         break;
       case HARD_DROP:
         while (!gameBoard.checkCollision(xPos, yPos + 1)) yPos++;
@@ -69,6 +69,39 @@ public abstract class Tetrimino {
    */
   public int getHeight() {
     return height;
+  }
+
+  /**
+   * Checks if rotating the tetrimino would result in an illegal position.
+   *
+   * @param gameBoard the current game board
+   * @param clockwise true if checking for clockwise rotation, false for counter-clockwise
+   * @return true if the rotation is valid, false otherwise
+   */
+  private boolean canRotate(GameBoard gameBoard, boolean clockwise) {
+    int[][] rotatedLayout = new int[height][width];
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        if (clockwise) {
+          rotatedLayout[j][height - 1 - i] = layout[i][j];
+        } else {
+          rotatedLayout[width - 1 - j][i] = layout[i][j];
+        }
+      }
+    }
+
+    for (int i = 0; i < rotatedLayout.length; i++) {
+      for (int j = 0; j < rotatedLayout[i].length; j++) {
+        if (rotatedLayout[i][j] != 0) {
+          int newX = xPos + j;
+          int newY = yPos + i;
+          if (gameBoard.isOutOfBounds(newX, newY) || gameBoard.isCellOccupied(newX, newY)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 
   /** Rotate tetrimino layout clockwise. */
