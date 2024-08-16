@@ -42,7 +42,7 @@
 
 <Pane fx:id="basePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stackedsuccess.controllers.GameBoardController">
    <children>
-      <GridPane fx:id="gameGrid" layoutX="361.0" layoutY="125.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="650.0">
+      <GridPane fx:id="gameGrid" layoutX="393.0" layoutY="89.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="550.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -87,17 +87,17 @@
          <children>
             <ImageView fx:id="holdPieceView" fitHeight="96.0" fitWidth="100.0" layoutX="-3.0" pickOnBounds="true" preserveRatio="true" />
          </children></Pane>
-      <Label fx:id="scoreLabel" layoutX="361.0" layoutY="45.0" prefHeight="46.0" prefWidth="315.0" text="Score: 0">
+      <Label fx:id="scoreLabel" layoutX="958.0" layoutY="520.0" prefHeight="46.0" prefWidth="315.0" text="Score: 0">
          <font>
             <Font name="Arial" size="36.0" />
          </font>
       </Label>
-      <Label fx:id="levelLabel" layoutX="804.0" layoutY="45.0" prefHeight="46.0" prefWidth="261.0" text="Level: 1">
+      <Label fx:id="levelLabel" layoutX="958.0" layoutY="672.0" prefHeight="46.0" prefWidth="261.0" text="Level: 1">
          <font>
             <Font name="Arial" size="36.0" />
          </font>
       </Label>
-      <GridPane fx:id="displayGrid" gridLinesVisible="true" layoutX="361.0" layoutY="125.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="650.0">
+      <GridPane fx:id="displayGrid" gridLinesVisible="true" layoutX="393.0" layoutY="89.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="550.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -133,5 +133,15 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
+      <Pane fx:id="holdPiece1" layoutX="989.0" layoutY="173.0" prefHeight="96.0" prefWidth="100.0" style="-fx-border-color: black;">
+         <children>
+            <ImageView fx:id="nextPieceView" fitHeight="96.0" fitWidth="100.0" layoutX="-3.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </Pane>
+      <Label layoutX="989.0" layoutY="114.0" prefHeight="46.0" prefWidth="181.0" text="Next Piece">
+         <font>
+            <Font name="Arial" size="36.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

@@ -47,7 +47,6 @@ public class GameBoard {
         currentTetrimino = TetriminoFactory.createRandomTetrimino();
       }
     }
-    printBoard();
   }
 
   /**
@@ -129,29 +128,6 @@ public class GameBoard {
     }
 
     for (int x = 0; x < board[0].length; x++) board[0][x] = 0;
-  }
-
-  // TODO: Remove when visuals are ported to JavaFX.
-  /** Debug utility to help separate game board from JavaFX elements. */
-  private void printBoard() {
-    int[][] layout = currentTetrimino.getTetriminoLayout();
-    System.out.println("===| " + frameCount + " |===");
-    for (int y = 0; y < board.length; y++) {
-      for (int x = 0; x < board[0].length; x++) {
-        if ((y >= currentTetrimino.yPos
-                && x >= currentTetrimino.xPos
-                && y < currentTetrimino.yPos + currentTetrimino.getHeight()
-                && x < currentTetrimino.xPos + currentTetrimino.getWidth())
-            && layout[y - currentTetrimino.yPos][x - currentTetrimino.xPos] != 0) {
-          System.out.print("█" + " ");
-        } else if (board[y][x] != 0) {
-          System.out.print("█" + " ");
-        } else {
-          System.out.print(0 + " ");
-        }
-      }
-      System.out.println();
-    }
   }
 
   /**

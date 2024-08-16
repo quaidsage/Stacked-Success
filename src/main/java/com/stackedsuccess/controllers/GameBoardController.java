@@ -26,7 +26,6 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   @FXML ImageView nextPieceView;
 
   private GameInstance gameInstance = new GameInstance();
-  private Tetrimino currentTetrimino;
   private int score = 0;
 
   @FXML
@@ -40,19 +39,13 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
         () -> {
           gameInstance.start();
           gameInstance.getGameBoard().setController(this); // Set the controller
-          currentTetrimino = gameInstance.getCurrentTetrimino();
           setWindowCloseHandler(getStage());
         });
   }
 
   @Override
   public void onTetriminoUpdate(Tetrimino tetrimino) {
-    Platform.runLater(() -> addTetrimino(tetrimino));
-  }
-
-  @FXML
-  private void addTetrimino(Tetrimino tetrimino) {
-    renderTetrimino(tetrimino);
+    Platform.runLater(() -> renderTetrimino(tetrimino));
   }
 
   @FXML
