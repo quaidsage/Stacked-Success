@@ -11,10 +11,12 @@ public class GameBoard {
   private final int[][] board;
   private Tetrimino currentTetrimino;
   private Tetrimino nextTetrimino;
+  private Tetrimino holdTetrimino;
   private int frameCount;
   private int score = 0;
   private int level = 1;
   private int linesCleared = 0;
+  private boolean holdUsed = false;
 
   private GameBoardController controller;
 
@@ -99,6 +101,7 @@ public class GameBoard {
    * @param tetrimino the tetrimino to place on the game board.
    */
   private void placeTetrimino(Tetrimino tetrimino) {
+    holdUsed = false;
     int[][] layout = tetrimino.getTetriminoLayout();
     for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
       for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
@@ -221,5 +224,29 @@ public class GameBoard {
       if (!isCellOccupied(x, rowY)) return false;
     }
     return true;
+  }
+
+  public void holdTetrimino() {
+    if (holdUsed) return;
+
+    if (holdTetrimino == null) {
+      holdTetrimino = currentTetrimino;
+      currentTetrimino = nextTetrimino;
+      nextTetrimino = TetriminoFactory.createRandomTetrimino();
+    } else {
+      System.out.println("Holding tetrimino");
+      Tetrimino temp = holdTetrimino;
+      holdTetrimino = currentTetrimino;
+      currentTetrimino = temp;
+
+      currentTetrimino.xPos = board[0].length / 2 - currentTetrimino.getWidth() / 2;
+      currentTetrimino.yPos = 0;
+    }
+
+    holdUsed = true;
+    if (controller != null) {
+      controller.setHoldPieceView(holdTetrimino);
+      controller.setNextPieceView(nextTetrimino);
+    }
   }
 }

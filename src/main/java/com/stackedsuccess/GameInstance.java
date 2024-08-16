@@ -75,6 +75,7 @@ public class GameInstance {
       } else {
         switch (action) {
           case PAUSE -> togglePause();
+          case HOLD -> gameBoard.holdTetrimino();
         }
       }
     }

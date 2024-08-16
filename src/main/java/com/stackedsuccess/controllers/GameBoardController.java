@@ -197,6 +197,16 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   }
 
   /**
+   * Sets the view of the hold tetromino to be loaded.
+   *
+   * @param tetrimino the tetrimino to be displayed in the hold image view
+   */
+  public void setHoldPieceView(Tetrimino tetrimino) {
+    Image image = new Image("/images/" + tetrimino.getClass().getSimpleName() + ".png");
+    holdPieceView.setImage(image);
+  }
+
+  /**
    * Method for handling game over event, when tetriminos spawn and collide into each other. Exits
    * the game when called
    */
