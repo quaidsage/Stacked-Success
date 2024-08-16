@@ -28,12 +28,18 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   private GameInstance gameInstance = new GameInstance();
   private int score = 0;
 
+  /**
+   * Initialises the game board controller, setting up the game grid and starting the game instance.
+   *
+   * <p>Set everything to default, and start the game instance while also setting listeners for
+   * tetrimino updates and setting the game board controller to the current instance.
+   */
   @FXML
   public void initialize() {
 
     scoreLabel.setText("Score:" + score);
     levelLabel.setText("Level: 1");
-    gameGrid.gridLinesVisibleProperty().setValue(true);
+    displayGrid.gridLinesVisibleProperty().set(true);
     gameInstance.setTetriminoUpdateListener(this);
     Platform.runLater(
         () -> {
@@ -43,11 +49,22 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
         });
   }
 
+  /**
+   * Listener for tetrimino updates, updates the game grid with the new tetrimino layout.
+   *
+   * @param tetrimino the tetrimino that is currently on the board
+   */
   @Override
   public void onTetriminoUpdate(Tetrimino tetrimino) {
     Platform.runLater(() -> renderTetrimino(tetrimino));
   }
 
+  /**
+   * Displays on the game grid where the tetrimino is located. Sets the background color of the grid
+   * to be black where the tetrimino is located.
+   *
+   * @param tetrimino the tetrimino to be displayed on the grid
+   */
   @FXML
   private void renderTetrimino(Tetrimino tetrimino) {
     gameGrid.getChildren().clear(); // Clear previous tetrimino
@@ -65,6 +82,11 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     }
   }
 
+  /**
+   * Updates the display grid above the game grid with position of the static tetriminos.
+   *
+   * @param tetrimino the tetrimino to be displayed on the grid
+   */
   @FXML
   public void updateDisplayGrid(Tetrimino tetrimino) {
     Platform.runLater(
@@ -82,6 +104,12 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
         });
   }
 
+  /**
+   * Clears the line at the given index and shifts all rows above downwards. Also increments the
+   * score and level if needed.
+   *
+   * @param lineIndex the index of the line to be cleared
+   */
   @FXML
   public void clearLine(int lineIndex) {
     Platform.runLater(
