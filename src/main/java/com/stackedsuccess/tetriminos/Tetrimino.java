@@ -96,18 +96,39 @@ public abstract class Tetrimino {
       }
     }
 
+    // Check for out of bounds and adjust position
+    int newX = xPos;
+    int newY = yPos;
     for (int i = 0; i < rotatedLayout.length; i++) {
       for (int j = 0; j < rotatedLayout[i].length; j++) {
         if (rotatedLayout[i][j] != 0) {
-          int newX = xPos + j;
-          int newY = yPos + i;
-          if (gameBoard.isOutOfBounds(newX, newY) || gameBoard.isCellOccupied(newX, newY)) {
+          int tempX = xPos + j;
+          int tempY = yPos + i;
+          if (gameBoard.isOutOfBounds(tempX, tempY)) {
+            if (tempX < 0) newX++;
+            if (tempX >= gameBoard.getWidth()) newX--;
+            if (tempY < 0) newY++;
+            if (tempY >= gameBoard.getHeight()) newY--;
+          }
+        }
+      }
+    }
+
+    // Check for collisions and adjust position
+    for (int i = 0; i < rotatedLayout.length; i++) {
+      for (int j = 0; j < rotatedLayout[i].length; j++) {
+        if (rotatedLayout[i][j] != 0) {
+          int tempX = newX + j;
+          int tempY = newY + i;
+          if (gameBoard.isCellOccupied(tempX, tempY)) {
             return;
           }
         }
       }
     }
 
+    xPos = newX;
+    yPos = newY;
     layout = rotatedLayout;
   }
 

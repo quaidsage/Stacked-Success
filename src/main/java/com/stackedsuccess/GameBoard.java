@@ -135,10 +135,10 @@ public class GameBoard {
           controller.clearLine(y);
         }
       }
-      linesCleared += fullRows;
-      updateLevel(linesCleared);
-      calculateScore(fullRows);
     }
+    linesCleared += fullRows;
+    updateLevel();
+    calculateScore(fullRows);
   }
 
   /**
@@ -146,10 +146,12 @@ public class GameBoard {
    *
    * @param linesCleared the number of lines cleared
    */
-  private void updateLevel(int linesCleared) {
+  private void updateLevel() {
+    System.out.println("Lines cleared: " + linesCleared);
     if (linesCleared >= 10) {
-      linesCleared = 0;
+      linesCleared -= 10;
       level++;
+      System.out.println("Level increased to: " + level);
       controller.updateLevel(level);
     }
   }
@@ -256,5 +258,9 @@ public class GameBoard {
 
   public int getHeight() {
     return DEFAULT_BOARD_HEIGHT;
+  }
+
+  public int getWidth() {
+    return DEFAULT_BOARD_WIDTH;
   }
 }
