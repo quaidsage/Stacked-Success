@@ -12,6 +12,9 @@ public class GameBoard {
   private Tetrimino currentTetrimino;
   private Tetrimino nextTetrimino;
   private int frameCount;
+  private int score = 0;
+  private int level = 1;
+  private int linesCleared = 0;
 
   private GameBoardController controller;
 
@@ -111,13 +114,54 @@ public class GameBoard {
 
   /** Clears full rows and moves rows above downwards. */
   private void clearFullRows() {
+    int fullRows = 0;
     for (int y = 0; y < board.length; y++) {
       if (isRowFull(y, board[y])) {
+        fullRows++;
         shiftRowsDown(y);
         if (controller != null) {
           controller.clearLine(y);
         }
       }
+      linesCleared += fullRows;
+      updateLevel(linesCleared);
+      calculateScore(fullRows);
+    }
+  }
+
+  /**
+   * Updates the level based on the number of lines cleared.
+   *
+   * @param linesCleared the number of lines cleared
+   */
+  private void updateLevel(int linesCleared) {
+    if (linesCleared >= 10) {
+      linesCleared = 0;
+      level++;
+      controller.updateLevel(level);
+    }
+  }
+
+  private void calculateScore(int linesCleared) {
+    switch (linesCleared) {
+      case 1:
+        score += 40;
+        controller.updateScore(score);
+        break;
+      case 2:
+        score += 100;
+        controller.updateScore(score);
+        break;
+      case 3:
+        score += 300;
+        controller.updateScore(score);
+        break;
+      case 4:
+        score += 1200;
+        controller.updateScore(score);
+        break;
+      default:
+        break;
     }
   }
 

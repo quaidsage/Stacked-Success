@@ -168,6 +168,19 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     return (Stage) basePane.getScene().getWindow();
   }
 
+  public void updateScore(int score) {
+    Platform.runLater(() -> scoreLabel.setText("Score: " + score));
+  }
+
+  public void updateLevel(int level) {
+    Platform.runLater(() -> levelLabel.setText("Level: " + level));
+  }
+
+  /**
+   * Sets the view of the next tetromino to be loaded.
+   *
+   * @param tetrimino the tetrimino to be displayed in the next piece view
+   */
   public void setNextPieceView(Tetrimino tetrimino) {
     Image image = new Image("/images/" + tetrimino.getClass().getSimpleName() + ".png");
     nextPieceView.setImage(image);
