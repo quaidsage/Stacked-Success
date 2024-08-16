@@ -1,9 +1,11 @@
 package com.stackedsuccess.controllers;
 
 import com.stackedsuccess.GameInstance;
+import com.stackedsuccess.tetriminos.Tetrimino;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -18,7 +20,11 @@ public class GameBoardController {
   @FXML Label scoreLabel;
   @FXML Label levelLabel;
 
+  @FXML ImageView holdPieceView;
+  @FXML ImageView nextPieceView;
+
   private GameInstance gameInstance = new GameInstance();
+  private Tetrimino currentTetrimino;
 
   @FXML
   public void initialize() {
@@ -30,6 +36,7 @@ public class GameBoardController {
     Platform.runLater(
         () -> {
           gameInstance.start();
+          currentTetrimino = gameInstance.getCurrentTetrimino();
           setWindowCloseHandler(getStage());
         });
   }
