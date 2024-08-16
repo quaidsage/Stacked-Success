@@ -5,17 +5,19 @@ import com.stackedsuccess.tetriminos.Tetrimino;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class GameBoardController {
+public class GameBoardController implements GameInstance.TetriminoUpdateListener {
 
   @FXML Pane basePane;
   @FXML Pane holdPiece;
   @FXML GridPane gameGrid;
+  @FXML Pane blockPane;
 
   @FXML Label scoreLabel;
   @FXML Label levelLabel;
@@ -32,6 +34,7 @@ public class GameBoardController {
     scoreLabel.setText("Score: 0");
     levelLabel.setText("Level: 1");
     gameGrid.gridLinesVisibleProperty().setValue(true);
+    gameInstance.setTetriminoUpdateListener(this);
 
     Platform.runLater(
         () -> {
@@ -39,6 +42,25 @@ public class GameBoardController {
           currentTetrimino = gameInstance.getCurrentTetrimino();
           setWindowCloseHandler(getStage());
         });
+  }
+
+  @Override
+  public void onTetriminoUpdate(Tetrimino tetrimino) {
+    Platform.runLater(() -> updateTetriminoImage(tetrimino));
+  }
+
+  @FXML
+  private void updateTetriminoImage(Tetrimino tetrimino) {
+    // Convert the Tetrimino to an Image and set it to the ImageView
+    Image tetriminoImage = convertTetriminoToImage(tetrimino);
+    blockPane.getChildren().clear();
+    blockPane.getChildren().add(new ImageView(tetriminoImage));
+  }
+
+  private Image convertTetriminoToImage(Tetrimino tetrimino) {
+    // Implement the logic to convert Tetrimino to Image
+    // This is a placeholder implementation
+    return new Image("images/" + tetrimino.getClass().getSimpleName() + ".png");
   }
 
   /**

@@ -16,12 +16,27 @@ public class GameInstance {
   private boolean isPaused;
 
   private Tetrimino currentTetrimino;
+  private TetriminoUpdateListener tetriminoUpdateListener;
 
   public GameInstance() {
     score = 0;
     gameDelay = 10;
     isPaused = false;
     isGameOver = false;
+  }
+
+  public interface TetriminoUpdateListener {
+    void onTetriminoUpdate(Tetrimino tetrimino);
+  }
+
+  public void setTetriminoUpdateListener(TetriminoUpdateListener listener) {
+    this.tetriminoUpdateListener = listener;
+  }
+
+  private void notifyTetriminoUpdate() {
+    if (tetriminoUpdateListener != null) {
+      tetriminoUpdateListener.onTetriminoUpdate(currentTetrimino);
+    }
   }
 
   /** Starts the game instance to periodically update the game board and handle game movement. */
@@ -39,6 +54,7 @@ public class GameInstance {
             if (!isPaused && !isGameOver) {
               gameBoard.update();
               currentTetrimino = gameBoard.getCurrentTetrimino();
+              notifyTetriminoUpdate();
             }
           }
         },
