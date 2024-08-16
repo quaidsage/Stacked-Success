@@ -30,6 +30,11 @@ public class GameBoard {
     initializeBoard();
   }
 
+  /**
+   * Set the link to a controller for the game board.
+   *
+   * @param controller the controller to set
+   */
   public void setController(GameBoardController controller) {
     this.controller = controller;
   }
@@ -156,6 +161,11 @@ public class GameBoard {
     }
   }
 
+  /**
+   * Calculates the score based on the number of lines cleared.
+   *
+   * @param linesCleared the number of lines cleared
+   */
   private void calculateScore(int linesCleared) {
     switch (linesCleared) {
       case 1:
@@ -228,6 +238,10 @@ public class GameBoard {
     return true;
   }
 
+  /**
+   * Hold the current tetrimino and swap with the hold tetrimino if available. Block the user from
+   * holding if they are already used it
+   */
   public void holdTetrimino() {
     if (holdUsed) return;
 
@@ -252,14 +266,29 @@ public class GameBoard {
     }
   }
 
+  /**
+   * Get the current score.
+   *
+   * @return the current score
+   */
   public GameBoardController getController() {
     return controller;
   }
 
+  /**
+   * Get the height of the board.
+   *
+   * @return the current height
+   */
   public int getHeight() {
     return DEFAULT_BOARD_HEIGHT;
   }
 
+  /**
+   * Get the width of the board.
+   *
+   * @return the current width
+   */
   public int getWidth() {
     return DEFAULT_BOARD_WIDTH;
   }
