@@ -18,7 +18,6 @@ public abstract class Tetrimino {
    * @param action the movement action on the tetrimino
    */
   public void updateTetrimino(GameBoard gameBoard, Action action) {
-    // TODO: Add updating of tetrimino preview/highlight here
 
     switch (action) {
       case MOVE_LEFT:
@@ -31,10 +30,10 @@ public abstract class Tetrimino {
         if (!gameBoard.checkCollision(xPos, yPos + 1)) yPos++;
         break;
       case ROTATE_CLOCKWISE:
-        if (canRotate(gameBoard, true)) rotateClockwise();
+        rotateClockwise(gameBoard);
         break;
       case ROTATE_COUNTERCLOCKWISE:
-        if (canRotate(gameBoard, false)) rotateCounterClockwise();
+        rotateCounterClockwise(gameBoard);
         break;
       case HARD_DROP:
         while (!gameBoard.checkCollision(xPos, yPos + 1)) yPos++;
@@ -88,22 +87,12 @@ public abstract class Tetrimino {
     return ghostY;
   }
 
-  /**
-   * Checks if rotating the tetrimino would result in an illegal position.
-   *
-   * @param gameBoard the current game board
-   * @param clockwise true if checking for clockwise rotation, false for counter-clockwise
-   * @return true if the rotation is valid, false otherwise
-   */
-  private boolean canRotate(GameBoard gameBoard, boolean clockwise) {
+  /** Rotate tetrimino layout clockwise. */
+  private void rotateClockwise(GameBoard gameBoard) {
     int[][] rotatedLayout = new int[height][width];
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        if (clockwise) {
-          rotatedLayout[j][height - 1 - i] = layout[i][j];
-        } else {
-          rotatedLayout[width - 1 - j][i] = layout[i][j];
-        }
+        rotatedLayout[width - j - 1][i] = layout[i][j];
       }
     }
 
@@ -113,27 +102,17 @@ public abstract class Tetrimino {
           int newX = xPos + j;
           int newY = yPos + i;
           if (gameBoard.isOutOfBounds(newX, newY) || gameBoard.isCellOccupied(newX, newY)) {
-            return false;
+            return;
           }
         }
       }
     }
-    return true;
-  }
 
-  /** Rotate tetrimino layout clockwise. */
-  private void rotateClockwise() {
-    int[][] rotatedLayout = new int[height][width];
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        rotatedLayout[width - j - 1][i] = layout[i][j];
-      }
-    }
     layout = rotatedLayout;
   }
 
   /** Rotate tetrimino layout counter-clockwise. */
-  private void rotateCounterClockwise() {
-    for (int i = 0; i < 3; i++) rotateClockwise();
+  private void rotateCounterClockwise(GameBoard gameBoard) {
+    for (int i = 0; i < 3; i++) rotateClockwise(gameBoard);
   }
 }
