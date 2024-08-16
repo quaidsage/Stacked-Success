@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -159,11 +160,16 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   }
 
   /**
-   * Get current stage, accessed by Anchor pane 'node'.
+   * Get current stage pane.
    *
    * @return current stage
    */
   private Stage getStage() {
     return (Stage) basePane.getScene().getWindow();
+  }
+
+  public void setNextPieceView(Tetrimino tetrimino) {
+    Image image = new Image("/images/" + tetrimino.getClass().getSimpleName() + ".png");
+    nextPieceView.setImage(image);
   }
 }

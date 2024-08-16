@@ -10,6 +10,7 @@ public class GameBoard {
 
   private final int[][] board;
   private Tetrimino currentTetrimino;
+  private Tetrimino nextTetrimino;
   private int frameCount;
 
   private GameBoardController controller;
@@ -31,11 +32,13 @@ public class GameBoard {
   /** Setup initial tetrimino pieces and board metrics. */
   private void initializeBoard() {
     currentTetrimino = TetriminoFactory.createRandomTetrimino();
+    nextTetrimino = TetriminoFactory.createRandomTetrimino();
     frameCount = 0;
   }
 
   /** Update the state of the board. */
   public void update() {
+    controller.setNextPieceView(nextTetrimino);
     frameCount++;
     // Stagger automatic tetrimino movement based on frame count
     if (frameCount % 100 == 0) {
@@ -44,7 +47,8 @@ public class GameBoard {
       } else {
         placeTetrimino(currentTetrimino);
         clearFullRows();
-        currentTetrimino = TetriminoFactory.createRandomTetrimino();
+        currentTetrimino = nextTetrimino;
+        nextTetrimino = TetriminoFactory.createRandomTetrimino();
       }
     }
   }
