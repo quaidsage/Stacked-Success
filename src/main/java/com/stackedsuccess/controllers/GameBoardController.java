@@ -18,13 +18,14 @@ public class GameBoardController {
   @FXML Label scoreLabel;
   @FXML Label levelLabel;
 
-  private GameInstance gameInstance;
+  private GameInstance gameInstance = new GameInstance();
 
   @FXML
   public void initialize() {
+
     scoreLabel.setText("Score: 0");
     levelLabel.setText("Level: 1");
-    gameGrid.getChildren().removeAll(gameGrid.getChildren());
+    gameGrid.gridLinesVisibleProperty().setValue(true);
 
     Platform.runLater(
         () -> {
