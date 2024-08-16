@@ -5,7 +5,6 @@ import com.stackedsuccess.tetriminos.Tetrimino;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -17,7 +16,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   @FXML Pane basePane;
   @FXML Pane holdPiece;
   @FXML GridPane gameGrid;
-  @FXML Pane blockPane;
+  @FXML GridPane displayGrid;
 
   @FXML Label scoreLabel;
   @FXML Label levelLabel;
@@ -46,21 +45,28 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
 
   @Override
   public void onTetriminoUpdate(Tetrimino tetrimino) {
-    Platform.runLater(() -> updateTetriminoImage(tetrimino));
+    Platform.runLater(() -> addTetrimino(tetrimino));
   }
 
   @FXML
-  private void updateTetriminoImage(Tetrimino tetrimino) {
-    // Convert the Tetrimino to an Image and set it to the ImageView
-    Image tetriminoImage = convertTetriminoToImage(tetrimino);
-    blockPane.getChildren().clear();
-    blockPane.getChildren().add(new ImageView(tetriminoImage));
+  private void addTetrimino(Tetrimino tetrimino) {
+    renderTetrimino(tetrimino);
   }
 
-  private Image convertTetriminoToImage(Tetrimino tetrimino) {
-    // Implement the logic to convert Tetrimino to Image
-    // This is a placeholder implementation
-    return new Image("images/" + tetrimino.getClass().getSimpleName() + ".png");
+  @FXML
+  private void renderTetrimino(Tetrimino tetrimino) {
+    gameGrid.getChildren().clear(); // Clear previous tetrimino
+
+    int[][] layout = tetrimino.getTetriminoLayout();
+    for (int row = 0; row < layout.length; row++) {
+      for (int col = 0; col < layout[row].length; col++) {
+        if (layout[row][col] != 0) {
+          Pane pane = new Pane();
+          pane.setStyle("-fx-background-color: black;");
+          gameGrid.add(pane, tetrimino.xPos + col, tetrimino.yPos + row);
+        }
+      }
+    }
   }
 
   /**
