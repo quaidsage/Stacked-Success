@@ -1,176 +1,295 @@
 package com.stackedsuccess;
 
+import com.stackedsuccess.controllers.GameBoardController;
 import com.stackedsuccess.tetriminos.*;
 
 // This class defines the game board and functionality to check board state
 public class GameBoard {
-    private static final int DEFAULT_BOARD_WIDTH = 10;
-    private static final int DEFAULT_BOARD_HEIGHT = 20;
+  private static final int DEFAULT_BOARD_WIDTH = 10;
+  private static final int DEFAULT_BOARD_HEIGHT = 20;
 
-    private final int[][] board;
-    private Tetrimino currentTetrimino;
-    private int frameCount;
+  private final int[][] board;
+  private Tetrimino currentTetrimino;
+  private Tetrimino nextTetrimino;
+  private Tetrimino holdTetrimino;
+  private int frameCount;
+  private int score = 0;
+  private int level = 1;
+  private int linesCleared = 0;
+  private boolean holdUsed = false;
 
-    public GameBoard() {
-        board = new int[DEFAULT_BOARD_HEIGHT][DEFAULT_BOARD_WIDTH];
-        initializeBoard();
+  private GameBoardController controller;
+
+  public GameBoard() {
+    board = new int[DEFAULT_BOARD_HEIGHT][DEFAULT_BOARD_WIDTH];
+    initializeBoard();
+  }
+
+  public GameBoard(int width, int height) {
+    board = new int[width][height];
+    initializeBoard();
+  }
+
+  /**
+   * Set the link to a controller for the game board.
+   *
+   * @param controller the controller to set
+   */
+  public void setController(GameBoardController controller) {
+    this.controller = controller;
+  }
+
+  /** Setup initial tetrimino pieces and board metrics. */
+  private void initializeBoard() {
+    currentTetrimino = TetriminoFactory.createRandomTetrimino();
+    nextTetrimino = TetriminoFactory.createRandomTetrimino();
+    frameCount = 0;
+  }
+
+  /** Update the state of the board. */
+  public void update() {
+    controller.setNextPieceView(nextTetrimino);
+    frameCount++;
+    // Stagger automatic tetrimino movement based on frame count
+    if (frameCount % 100 == 0) {
+      if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos + 1)) {
+        currentTetrimino.updateTetrimino(this, Action.MOVE_DOWN);
+      } else {
+        placeTetrimino(currentTetrimino);
+        clearFullRows();
+        currentTetrimino = nextTetrimino;
+        nextTetrimino = TetriminoFactory.createRandomTetrimino();
+      }
     }
+  }
 
-    public GameBoard(int width, int height) {
-        board = new int[width][height];
-        initializeBoard();
-    }
+  /**
+   * Get-type function.
+   *
+   * @return the current tetrimino for game board
+   */
+  public Tetrimino getCurrentTetrimino() {
+    return currentTetrimino;
+  }
 
-    /** Setup initial tetrimino pieces and board metrics. */
-    private void initializeBoard() {
-        currentTetrimino = TetriminoFactory.createRandomTetrimino();
-        frameCount = 0;
-    }
+  /**
+   * Checks if current tetrimino will collide with borders or existing cells.
+   *
+   * @param x the x position to start check for collision
+   * @param y the y position to start check for collision
+   * @return true if current tetrimino will collide with border or existing cells
+   */
+  public boolean checkCollision(int x, int y) {
+    int[][] layout = currentTetrimino.getTetriminoLayout();
+    int newX, newY;
 
-    /** Update the state of the board. */
-    public void update() {
-        frameCount++;
-        // Stagger automatic tetrimino movement based on frame count
-        if (frameCount % 100 == 0) {
-            if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos + 1)) {
-                currentTetrimino.updateTetrimino(this, Action.MOVE_DOWN);
-            } else {
-                placeTetrimino(currentTetrimino);
-                clearFullRows();
-                currentTetrimino = TetriminoFactory.createRandomTetrimino();
-            }
+    for (int layoutY = 0; layoutY < currentTetrimino.getHeight(); layoutY++) {
+      for (int layoutX = 0; layoutX < currentTetrimino.getWidth(); layoutX++) {
+        if (layout[layoutY][layoutX] != 0) {
+          newX = x + layoutX;
+          newY = y + layoutY;
+
+          // Check for out of bound collisions
+          if (isOutOfBounds(newX, newY)) return true;
+
+          // Check for existing tetrimino cells
+          if (isCellOccupied(newX, newY)) return true;
         }
-        printBoard();
+      }
     }
+    return false;
+  }
 
-    /**
-     * Get-type function.
-     *
-     * @return the current tetrimino for game board
-     */
-    public Tetrimino getCurrentTetrimino() { return currentTetrimino; }
+  /**
+   * Appends new tetrimino to the game board.
+   *
+   * @param tetrimino the tetrimino to place on the game board.
+   */
+  private void placeTetrimino(Tetrimino tetrimino) {
+    holdUsed = false;
+    int[][] layout = tetrimino.getTetriminoLayout();
+    for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
+      for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
+        if (layout[layoutY][layoutX] != 0) {
 
-    /**
-     * Checks if current tetrimino will collide with borders or existing cells.
-     *
-     * @param x the x position to start check for collision
-     * @param y the y position to start check for collision
-     * @return true if current tetrimino will collide with border or existing cells
-     */
-    public boolean checkCollision(int x, int y) {
-        int[][] layout = currentTetrimino.getTetriminoLayout();
-        int newX, newY;
+          int spawnX = tetrimino.xPos + layoutX;
+          int spawnY = tetrimino.yPos + layoutY;
+          // Check for collision at the spawn location
+          if (isCellOccupied(spawnX, spawnY)) {
+            controller.gameOver();
+            return;
+          }
 
-        for (int layoutY = 0; layoutY < currentTetrimino.getHeight(); layoutY++) {
-            for (int layoutX = 0; layoutX < currentTetrimino.getWidth(); layoutX++) {
-                if (layout[layoutY][layoutX] != 0) {
-                    newX = x + layoutX;
-                    newY = y + layoutY;
-
-                    // Check for out of bound collisions
-                    if (isOutOfBounds(newX, newY)) return true;
-
-                    // Check for existing tetrimino cells
-                    if (isCellOccupied(newX, newY)) return true;
-                }
-            }
+          board[spawnY][spawnX] = layout[layoutY][layoutX];
         }
-        return false;
+      }
     }
+    if (controller != null) {
+      controller.updateDisplayGrid(tetrimino);
+    }
+  }
 
-    /**
-     * Appends new tetrimino to the game board.
-     *
-     * @param tetrimino the tetrimino to place on the game board.
-     */
-    private void placeTetrimino(Tetrimino tetrimino) {
-        int[][] layout = tetrimino.getTetriminoLayout();
-
-        for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
-            for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
-                if (layout[layoutY][layoutX] != 0) {
-                    board[tetrimino.yPos + layoutY][tetrimino.xPos + layoutX] = layout[layoutY][layoutX];
-                }
-            }
+  /** Clears full rows and moves rows above downwards. */
+  private void clearFullRows() {
+    int fullRows = 0;
+    for (int y = 0; y < board.length; y++) {
+      if (isRowFull(y, board[y])) {
+        fullRows++;
+        shiftRowsDown(y);
+        if (controller != null) {
+          controller.clearLine(y);
         }
+      }
+    }
+    linesCleared += fullRows;
+    updateLevel();
+    calculateScore(fullRows);
+  }
+
+  /**
+   * Updates the level based on the number of lines cleared.
+   *
+   * @param linesCleared the number of lines cleared
+   */
+  private void updateLevel() {
+    System.out.println("Lines cleared: " + linesCleared);
+    if (linesCleared >= 10) {
+      linesCleared -= 10;
+      level++;
+      System.out.println("Level increased to: " + level);
+      controller.updateLevel(level);
+    }
+  }
+
+  /**
+   * Calculates the score based on the number of lines cleared.
+   *
+   * @param linesCleared the number of lines cleared
+   */
+  private void calculateScore(int linesCleared) {
+    switch (linesCleared) {
+      case 1:
+        score += 40;
+        controller.updateScore(score);
+        break;
+      case 2:
+        score += 100;
+        controller.updateScore(score);
+        break;
+      case 3:
+        score += 300;
+        controller.updateScore(score);
+        break;
+      case 4:
+        score += 1200;
+        controller.updateScore(score);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Moves rows above certain row downwards and creates empty line at top of game board.
+   *
+   * @param fromYAxis the start y-axis for moving subsequent rows downward
+   */
+  private void shiftRowsDown(int fromYAxis) {
+    for (int y = fromYAxis; y > 0; y--) {
+      System.arraycopy(board[y - 1], 0, board[y], 0, board[0].length);
     }
 
-    /** Clears full rows and moves rows above downwards. */
-    private void clearFullRows() {
-        for (int y = 0; y < board.length; y++) {
-            if (isRowFull(y, board[y])) {
-                shiftRowsDown(y);
-            }
-        }
+    for (int x = 0; x < board[0].length; x++) board[0][x] = 0;
+  }
+
+  /**
+   * Checks if coordinates are outside the bounds of the game board.
+   *
+   * @param x the x position to check
+   * @param y the y position to check
+   * @return true if the coordinates are out of bounds
+   */
+  public boolean isOutOfBounds(int x, int y) {
+    return x < 0 || x >= board[0].length || y < 0 || y >= board.length;
+  }
+
+  /**
+   * Check if coordinates are occupied in the game board.
+   *
+   * @param x the x position to check
+   * @param y the y position to check
+   * @return true if cell is occupied in game board
+   */
+  public boolean isCellOccupied(int x, int y) {
+    return board[y][x] != 0;
+  }
+
+  /**
+   * Check if the contents within a row are full of tetrimino cells.
+   *
+   * @param rowY the y level or row number of given row
+   * @param row the row to check
+   * @return whether the row is full or not
+   */
+  private boolean isRowFull(int rowY, int[] row) {
+    for (int x = 0; x < row.length; x++) {
+      if (!isCellOccupied(x, rowY)) return false;
+    }
+    return true;
+  }
+
+  /**
+   * Hold the current tetrimino and swap with the hold tetrimino if available. Block the user from
+   * holding if they are already used it
+   */
+  public void holdTetrimino() {
+    if (holdUsed) return;
+
+    if (holdTetrimino == null) {
+      holdTetrimino = currentTetrimino;
+      currentTetrimino = nextTetrimino;
+      nextTetrimino = TetriminoFactory.createRandomTetrimino();
+    } else {
+      System.out.println("Holding tetrimino");
+      Tetrimino temp = holdTetrimino;
+      holdTetrimino = currentTetrimino;
+      currentTetrimino = temp;
+
+      currentTetrimino.xPos = board[0].length / 2 - currentTetrimino.getWidth() / 2;
+      currentTetrimino.yPos = 0;
     }
 
-    /**
-     * Moves rows above certain row downwards and creates empty line at top of game board.
-     *
-     * @param fromYAxis the start y-axis for moving subsequent rows downward
-     */
-    private void shiftRowsDown(int fromYAxis) {
-        for (int y = fromYAxis; y > 0; y--) {
-            System.arraycopy(board[y - 1], 0, board[y], 0, board[0].length);
-        }
-
-        for (int x = 0; x < board[0].length; x++) board[0][x] = 0;
+    holdUsed = true;
+    if (controller != null) {
+      controller.setHoldPieceView(holdTetrimino);
+      controller.setNextPieceView(nextTetrimino);
     }
+  }
 
-    // TODO: Remove when visuals are ported to JavaFX.
-    /** Debug utility to help separate game board from JavaFX elements. */
-    private void printBoard() {
-        int[][] layout = currentTetrimino.getTetriminoLayout();
-        System.out.println("===| " + frameCount + " |===");
-        for (int y = 0; y < board.length; y++) {
-            for (int x = 0; x < board[0].length; x++) {
-                if ((y >= currentTetrimino.yPos && x >= currentTetrimino.xPos && y < currentTetrimino.yPos + currentTetrimino.getHeight() && x < currentTetrimino.xPos + currentTetrimino.getWidth()) && layout[y - currentTetrimino.yPos][x - currentTetrimino.xPos] != 0) {
-                    System.out.print("█" + " ");
-                } else if (board[y][x] != 0) {
-                    System.out.print("█" + " ");
-                } else {
-                    System.out.print(0 + " ");
-                }
-            }
-            System.out.println();
-        }
-    }
+  /**
+   * Get the current score.
+   *
+   * @return the current score
+   */
+  public GameBoardController getController() {
+    return controller;
+  }
 
-    /**
-     * Checks if coordinates are outside the bounds of the game board.
-     *
-     * @param x the x position to check
-     * @param y the y position to check
-     * @return true if the coordinates are out of bounds
-     */
-    private boolean isOutOfBounds(int x, int y) {
-        return x < 0 || x >= board[0].length || y < 0 || y >= board.length;
-    }
+  /**
+   * Get the height of the board.
+   *
+   * @return the current height
+   */
+  public int getHeight() {
+    return DEFAULT_BOARD_HEIGHT;
+  }
 
-    /**
-     * Check if coordinates are occupied in the game board.
-     *
-     * @param x the x position to check
-     * @param y the y position to check
-     * @return true if cell is occupied in game board
-     */
-    private boolean isCellOccupied(int x, int y) {
-        return board[y][x] != 0;
-    }
-
-
-    /**
-     * Check if the contents within a row are full of tetrimino cells.
-     *
-     * @param rowY the y level or row number of given row
-     * @param row the row to check
-     * @return whether the row is full or not
-     */
-    private boolean isRowFull(int rowY, int[] row) {
-        for (int x = 0; x < row.length; x++) {
-            if (!isCellOccupied(x, rowY)) return false;
-        }
-        return true;
-    }
-
+  /**
+   * Get the width of the board.
+   *
+   * @return the current width
+   */
+  public int getWidth() {
+    return DEFAULT_BOARD_WIDTH;
+  }
 }
