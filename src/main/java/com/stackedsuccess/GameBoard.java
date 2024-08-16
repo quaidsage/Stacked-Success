@@ -249,4 +249,12 @@ public class GameBoard {
       controller.setNextPieceView(nextTetrimino);
     }
   }
+
+  public GameBoardController getController() {
+    return controller;
+  }
+
+  public int getHeight() {
+    return DEFAULT_BOARD_HEIGHT;
+  }
 }

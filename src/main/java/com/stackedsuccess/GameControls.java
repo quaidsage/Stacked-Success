@@ -16,14 +16,14 @@ public class GameControls {
 
   /** Bind default controls to actions. */
   private void initializeControls() {
-    controls.put(Action.MOVE_LEFT, KeyCode.A);
-    controls.put(Action.MOVE_RIGHT, KeyCode.D);
-    controls.put(Action.MOVE_DOWN, KeyCode.S);
+    controls.put(Action.MOVE_LEFT, KeyCode.LEFT);
+    controls.put(Action.MOVE_RIGHT, KeyCode.RIGHT);
+    controls.put(Action.MOVE_DOWN, KeyCode.DOWN);
     controls.put(Action.HARD_DROP, KeyCode.SPACE);
-    controls.put(Action.ROTATE_CLOCKWISE, KeyCode.Q);
-    controls.put(Action.ROTATE_COUNTERCLOCKWISE, KeyCode.E);
+    controls.put(Action.ROTATE_CLOCKWISE, KeyCode.Z);
+    controls.put(Action.ROTATE_COUNTERCLOCKWISE, KeyCode.X);
     controls.put(Action.PAUSE, KeyCode.ESCAPE);
-    controls.put(Action.HOLD, KeyCode.W);
+    controls.put(Action.HOLD, KeyCode.C);
   }
 
   /**

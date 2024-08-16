@@ -42,6 +42,9 @@ public abstract class Tetrimino {
       default:
         return;
     }
+    // Calculate ghost position
+    int ghostY = calculateGhostY(gameBoard);
+    gameBoard.getController().updateGhostBlock(this, ghostY);
   }
 
   /**
@@ -69,6 +72,20 @@ public abstract class Tetrimino {
    */
   public int getHeight() {
     return height;
+  }
+
+  /**
+   * Calculates the y position of the ghost tetrimino.
+   *
+   * @param gameBoard the current game board
+   * @return the y position of the ghost tetrimino
+   */
+  public int calculateGhostY(GameBoard gameBoard) {
+    int ghostY = yPos;
+    while (!gameBoard.checkCollision(xPos, ghostY + 1)) {
+      ghostY++;
+    }
+    return ghostY;
   }
 
   /**

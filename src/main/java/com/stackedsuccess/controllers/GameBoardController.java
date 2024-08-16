@@ -2,6 +2,7 @@ package com.stackedsuccess.controllers;
 
 import com.stackedsuccess.GameInstance;
 import com.stackedsuccess.tetriminos.Tetrimino;
+import java.util.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -28,6 +29,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
 
   private GameInstance gameInstance = new GameInstance();
   private int score = 0;
+  private ArrayList<Node> previousGhostTetrominos = new ArrayList<>();
 
   /**
    * Initialises the game board controller, setting up the game grid and starting the game instance.
@@ -131,6 +133,62 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
             }
           }
         });
+  }
+
+  /**
+   * Updates the ghost block on the display grid.
+   *
+   * @param tetrimino the tetrimino to be displayed as a ghost block
+   * @param ghostY the y position of the ghost block
+   */
+  @FXML
+  public void updateGhostBlock(Tetrimino tetrimino, int ghostY) {
+    Platform.runLater(
+        () -> {
+          // Clear previous ghost block
+          displayGrid.getChildren().removeAll(previousGhostTetrominos);
+          previousGhostTetrominos.clear();
+
+          // Check for overlap
+          if (isOverlapping(tetrimino, ghostY)) {
+            return; // Do not display ghost block if overlapping
+          }
+
+          int[][] layout = tetrimino.getTetriminoLayout();
+          for (int row = 0; row < layout.length; row++) {
+            for (int col = 0; col < layout[row].length; col++) {
+              if (layout[row][col] != 0) {
+                Pane pane = new Pane();
+                pane.setStyle("-fx-background-color: lightgrey;");
+                displayGrid.add(pane, tetrimino.xPos + col, ghostY + row);
+                previousGhostTetrominos.add(pane);
+              }
+            }
+          }
+        });
+  }
+
+  /**
+   * Checks if the tetrimino is overlapping with the ghost block.
+   *
+   * @param tetrimino the tetrimino to be checked for overlap
+   * @param ghostY the y position of the ghost block
+   * @return true if the tetrimino is overlapping with the ghost block, false otherwise
+   */
+  @FXML
+  private boolean isOverlapping(Tetrimino tetrimino, int ghostY) {
+    int[][] layout = tetrimino.getTetriminoLayout();
+    for (int row = 0; row < layout.length; row++) {
+      for (int col = 0; col < layout[row].length; col++) {
+        if (layout[row][col] != 0) {
+          int blockY = tetrimino.yPos + row;
+          if (blockY == ghostY + row) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   /**
