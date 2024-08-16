@@ -70,7 +70,7 @@ public class GameInstance {
   public void handleInput(KeyEvent key) {
     Action action = gameControls.getAction(key);
     if (action != null) {
-      if (updatesTetrimino(action)) {
+      if (updatesTetrimino(action) && !isPaused) {
         gameBoard.getCurrentTetrimino().updateTetrimino(gameBoard, action);
       } else {
         switch (action) {
