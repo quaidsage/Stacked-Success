@@ -109,4 +109,13 @@ public class GameInstance {
   public Tetrimino getCurrentTetrimino() {
     return currentTetrimino;
   }
+
+  /**
+   * Get the current game board.
+   *
+   * @return current game board
+   */
+  public GameBoard getGameBoard() {
+    return gameBoard;
+  }
 }

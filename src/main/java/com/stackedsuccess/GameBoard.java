@@ -1,5 +1,6 @@
 package com.stackedsuccess;
 
+import com.stackedsuccess.controllers.GameBoardController;
 import com.stackedsuccess.tetriminos.*;
 
 // This class defines the game board and functionality to check board state
@@ -11,6 +12,8 @@ public class GameBoard {
   private Tetrimino currentTetrimino;
   private int frameCount;
 
+  private GameBoardController controller;
+
   public GameBoard() {
     board = new int[DEFAULT_BOARD_HEIGHT][DEFAULT_BOARD_WIDTH];
     initializeBoard();
@@ -19,6 +22,10 @@ public class GameBoard {
   public GameBoard(int width, int height) {
     board = new int[width][height];
     initializeBoard();
+  }
+
+  public void setController(GameBoardController controller) {
+    this.controller = controller;
   }
 
   /** Setup initial tetrimino pieces and board metrics. */
@@ -87,13 +94,15 @@ public class GameBoard {
    */
   private void placeTetrimino(Tetrimino tetrimino) {
     int[][] layout = tetrimino.getTetriminoLayout();
-
     for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
       for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
         if (layout[layoutY][layoutX] != 0) {
           board[tetrimino.yPos + layoutY][tetrimino.xPos + layoutX] = layout[layoutY][layoutX];
         }
       }
+    }
+    if (controller != null) {
+      controller.updateDisplayGrid(tetrimino);
     }
   }
 
@@ -102,6 +111,9 @@ public class GameBoard {
     for (int y = 0; y < board.length; y++) {
       if (isRowFull(y, board[y])) {
         shiftRowsDown(y);
+        if (controller != null) {
+          controller.clearLine(y);
+        }
       }
     }
   }

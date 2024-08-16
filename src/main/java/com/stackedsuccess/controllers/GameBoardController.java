@@ -4,6 +4,7 @@ import com.stackedsuccess.GameInstance;
 import com.stackedsuccess.tetriminos.Tetrimino;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -26,18 +27,19 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
 
   private GameInstance gameInstance = new GameInstance();
   private Tetrimino currentTetrimino;
+  private int score = 0;
 
   @FXML
   public void initialize() {
 
-    scoreLabel.setText("Score: 0");
+    scoreLabel.setText("Score:" + score);
     levelLabel.setText("Level: 1");
     gameGrid.gridLinesVisibleProperty().setValue(true);
     gameInstance.setTetriminoUpdateListener(this);
-
     Platform.runLater(
         () -> {
           gameInstance.start();
+          gameInstance.getGameBoard().setController(this); // Set the controller
           currentTetrimino = gameInstance.getCurrentTetrimino();
           setWindowCloseHandler(getStage());
         });
@@ -56,6 +58,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   @FXML
   private void renderTetrimino(Tetrimino tetrimino) {
     gameGrid.getChildren().clear(); // Clear previous tetrimino
+    gameGrid.gridLinesVisibleProperty().setValue(true);
 
     int[][] layout = tetrimino.getTetriminoLayout();
     for (int row = 0; row < layout.length; row++) {
@@ -67,6 +70,45 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
         }
       }
     }
+  }
+
+  @FXML
+  public void updateDisplayGrid(Tetrimino tetrimino) {
+    Platform.runLater(
+        () -> {
+          int[][] layout = tetrimino.getTetriminoLayout();
+          for (int row = 0; row < layout.length; row++) {
+            for (int col = 0; col < layout[row].length; col++) {
+              if (layout[row][col] != 0) {
+                Pane pane = new Pane();
+                pane.setStyle("-fx-background-color: black;");
+                displayGrid.add(pane, tetrimino.xPos + col, tetrimino.yPos + row);
+              }
+            }
+          }
+        });
+  }
+
+  @FXML
+  public void clearLine(int lineIndex) {
+    Platform.runLater(
+        () -> {
+          displayGrid
+              .getChildren()
+              .removeIf(
+                  node -> {
+                    Integer rowIndex = GridPane.getRowIndex(node);
+                    return rowIndex != null && rowIndex.intValue() == lineIndex;
+                  });
+
+          // Shift rows down
+          for (Node node : displayGrid.getChildren()) {
+            Integer rowIndex = GridPane.getRowIndex(node);
+            if (rowIndex != null && rowIndex < lineIndex) {
+              GridPane.setRowIndex(node, rowIndex + 1);
+            }
+          }
+        });
   }
 
   /**
