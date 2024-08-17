@@ -204,4 +204,9 @@ public abstract class Tetrimino {
   public void setYPos(int yPos) {
     this.yPos = yPos;
   }
+
+  public boolean getHasHardDropped() {
+    return hasHardDropped;
+  }
+
 }

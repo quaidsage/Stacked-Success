@@ -263,7 +263,7 @@ public class GameBoard {
    * holding if they are already used it
    */
   public void holdTetrimino() {
-    if (holdUsed) return;
+    if (holdUsed || currentTetrimino.getHasHardDropped()) return;
 
     if (holdTetrimino == null) {
       holdTetrimino = currentTetrimino;
