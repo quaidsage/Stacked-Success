@@ -12,6 +12,21 @@ In order to get play the game, clone the repository and type in
 ./mvnw javafx:run
 ```
 
+The default controls of the game are as follows
+```
+Move Left - Left Arrow
+Move Right - Right Arrow
+Move Down - Down Arrow
+Hard Drop - Spacebar
+
+Rotate Clockwise - Z
+Rotate Anticlockwise - X
+
+Hold - C
+
+Pause - Esc
+```
+
 In order to get started by contributing the file, make sure to fork the repository and clone onto your own PC. This
 project relies on Java 17, JavaFX and the Maven wrapper as the build tool.
 
