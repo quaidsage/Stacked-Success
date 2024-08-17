@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class GameScreenController {
 
@@ -16,7 +15,9 @@ public class GameScreenController {
 
   /** On game screen initialization, start game and set window exit handle. */
   @FXML
-  public void initialize() {}
+  public void initialize() {
+    // Empty currently as this screen has not been completed yet -> could be deleted if not needed
+  }
 
   /**
    * Sends the key pressed event to game instance to utilise.
@@ -26,30 +27,5 @@ public class GameScreenController {
   @FXML
   public void onKeyPressed(KeyEvent event) {
     game.handleInput(event);
-  }
-
-  /**
-   * Creates event handler to stop the game on window close.
-   *
-   * @param stage the stage containing the game scene
-   */
-  private void setWindowCloseHandler(Stage stage) {
-    stage.setOnCloseRequest(
-        event -> {
-          System.out.println("Game ended due to window close. ");
-          game.isGameOver = true;
-
-          // TODO: Remove when more scenes added.
-          System.exit(0);
-        });
-  }
-
-  /**
-   * Get current stage, accessed by Anchor pane 'node'.
-   *
-   * @return current stage
-   */
-  private Stage getStage() {
-    return (Stage) basePane.getScene().getWindow();
   }
 }

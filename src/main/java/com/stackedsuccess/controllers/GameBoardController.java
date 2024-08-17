@@ -79,7 +79,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
         if (layout[row][col] != 0) {
           Pane pane = new Pane();
           pane.setStyle("-fx-background-color: black;");
-          gameGrid.add(pane, tetrimino.xPos + col, tetrimino.yPos + row);
+          gameGrid.add(pane, tetrimino.getXPos() + col, tetrimino.getYPos() + row);
         }
       }
     }
@@ -100,7 +100,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
               if (layout[row][col] != 0) {
                 Pane pane = new Pane();
                 pane.setStyle("-fx-background-color: black;");
-                displayGrid.add(pane, tetrimino.xPos + col, tetrimino.yPos + row);
+                displayGrid.add(pane, tetrimino.getXPos() + col, tetrimino.getYPos() + row);
               }
             }
           }
@@ -160,7 +160,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
               if (layout[row][col] != 0) {
                 Pane pane = new Pane();
                 pane.setStyle("-fx-background-color: lightgrey;");
-                displayGrid.add(pane, tetrimino.xPos + col, ghostY + row);
+                displayGrid.add(pane, tetrimino.getXPos() + col, ghostY + row);
                 previousGhostTetrominos.add(pane);
               }
             }
@@ -181,7 +181,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     for (int row = 0; row < layout.length; row++) {
       for (int col = 0; col < layout[row].length; col++) {
         if (layout[row][col] != 0) {
-          int blockY = tetrimino.yPos + row;
+          int blockY = tetrimino.getYPos() + row;
           if (blockY == ghostY + row) {
             return true;
           }
@@ -209,8 +209,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   private void setWindowCloseHandler(Stage stage) {
     stage.setOnCloseRequest(
         event -> {
-          System.out.println("Game ended due to window close. ");
-          gameInstance.isGameOver = true;
+          gameInstance.setGameOver(true);
 
           // TODO: Remove when more scenes added.
           System.exit(0);
@@ -270,7 +269,6 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   public void gameOver() {
-    System.out.println("Game over!");
     System.exit(0);
   }
 }

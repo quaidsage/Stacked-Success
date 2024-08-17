@@ -7,8 +7,8 @@ import javafx.scene.input.KeyEvent;
 
 // This class defines the game instance, controlling the game loop for the current game.
 public class GameInstance {
-  public boolean isGameOver;
-  public int score;
+  private boolean isGameOver;
+  private int score;
 
   private GameControls gameControls;
   private GameBoard gameBoard;
@@ -73,9 +73,10 @@ public class GameInstance {
       if (updatesTetrimino(action) && !isPaused) {
         gameBoard.getCurrentTetrimino().updateTetrimino(gameBoard, action);
       } else {
-        switch (action) {
-          case PAUSE -> togglePause();
-          case HOLD -> gameBoard.holdTetrimino();
+        if (action == Action.PAUSE) {
+          togglePause();
+        } else if (action == Action.HOLD) {
+          gameBoard.holdTetrimino();
         }
       }
     }
@@ -118,5 +119,32 @@ public class GameInstance {
    */
   public GameBoard getGameBoard() {
     return gameBoard;
+  }
+
+  /**
+   * Get the current game score.
+   *
+   * @return current game score
+   */
+  public int getScore() {
+    return score;
+  }
+
+  /**
+   * Get game over status
+   *
+   * @param score the score to set
+   */
+  public boolean isGameOver() {
+    return isGameOver;
+  }
+
+  /**
+   * Set game over status
+   *
+   * @param isGameOver the game over status to set
+   */
+  public void setGameOver(boolean isGameOver) {
+    this.isGameOver = isGameOver;
   }
 }

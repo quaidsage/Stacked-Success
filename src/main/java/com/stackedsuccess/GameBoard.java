@@ -52,7 +52,7 @@ public class GameBoard {
     frameCount++;
     // Stagger automatic tetrimino movement based on frame count
     if (frameCount % 100 == 0) {
-      if (!checkCollision(currentTetrimino.xPos, currentTetrimino.yPos + 1)) {
+      if (!checkCollision(currentTetrimino.getXPos(), currentTetrimino.getYPos() + 1)) {
         currentTetrimino.updateTetrimino(this, Action.MOVE_DOWN);
       } else {
         placeTetrimino(currentTetrimino);
@@ -81,7 +81,8 @@ public class GameBoard {
    */
   public boolean checkCollision(int x, int y) {
     int[][] layout = currentTetrimino.getTetriminoLayout();
-    int newX, newY;
+    int newX;
+    int newY;
 
     for (int layoutY = 0; layoutY < currentTetrimino.getHeight(); layoutY++) {
       for (int layoutX = 0; layoutX < currentTetrimino.getWidth(); layoutX++) {
@@ -112,8 +113,8 @@ public class GameBoard {
       for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
         if (layout[layoutY][layoutX] != 0) {
 
-          int spawnX = tetrimino.xPos + layoutX;
-          int spawnY = tetrimino.yPos + layoutY;
+          int spawnX = tetrimino.getXPos() + layoutX;
+          int spawnY = tetrimino.getYPos() + layoutY;
           // Check for collision at the spawn location
           if (isCellOccupied(spawnX, spawnY)) {
             controller.gameOver();
@@ -152,11 +153,9 @@ public class GameBoard {
    * @param linesCleared the number of lines cleared
    */
   private void updateLevel() {
-    System.out.println("Lines cleared: " + linesCleared);
     if (linesCleared >= 10) {
       linesCleared -= 10;
       level++;
-      System.out.println("Level increased to: " + level);
       controller.updateLevel(level);
     }
   }
@@ -250,13 +249,12 @@ public class GameBoard {
       currentTetrimino = nextTetrimino;
       nextTetrimino = TetriminoFactory.createRandomTetrimino();
     } else {
-      System.out.println("Holding tetrimino");
       Tetrimino temp = holdTetrimino;
       holdTetrimino = currentTetrimino;
       currentTetrimino = temp;
 
-      currentTetrimino.xPos = board[0].length / 2 - currentTetrimino.getWidth() / 2;
-      currentTetrimino.yPos = 0;
+      currentTetrimino.setXPos(board[0].length / 2 - currentTetrimino.getWidth() / 2);
+      currentTetrimino.setYPos(0);
     }
 
     holdUsed = true;

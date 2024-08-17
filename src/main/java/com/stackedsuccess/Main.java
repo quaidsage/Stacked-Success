@@ -16,9 +16,9 @@ public class Main extends Application {
     GAMEBOARD
   }
 
-  private static Map<SceneName, Parent> scenes = new HashMap<>();
+  private Map<SceneName, Parent> scenes = new HashMap<>();
 
-  private static Scene scene;
+  private Scene scene;
 
   public static void main(String[] args) {
     launch();
