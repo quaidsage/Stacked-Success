@@ -8,8 +8,11 @@ public abstract class Tetrimino {
   protected int width;
   protected int height;
 
+  private boolean hasHardDropped = false;
+
   protected int xPos;
   protected int yPos;
+
 
   /**
    * Updates tetrimino based on given action and game board state.
@@ -21,22 +24,23 @@ public abstract class Tetrimino {
 
     switch (action) {
       case MOVE_LEFT:
-        if (!gameBoard.checkCollision(xPos - 1, yPos)) xPos--;
+        if (!hasHardDropped && !gameBoard.checkCollision(xPos - 1, yPos)) xPos--;
         break;
       case MOVE_RIGHT:
-        if (!gameBoard.checkCollision(xPos + 1, yPos)) xPos++;
+        if (!hasHardDropped && !gameBoard.checkCollision(xPos + 1, yPos)) xPos++;
         break;
       case MOVE_DOWN:
         if (!gameBoard.checkCollision(xPos, yPos + 1)) yPos++;
         break;
       case ROTATE_CLOCKWISE:
-        rotateClockwise(gameBoard);
+        if(!hasHardDropped){ rotateClockwise(gameBoard);}
         break;
       case ROTATE_COUNTERCLOCKWISE:
-        rotateCounterClockwise(gameBoard);
+        if(!hasHardDropped) {rotateCounterClockwise(gameBoard);}
         break;
       case HARD_DROP:
         while (!gameBoard.checkCollision(xPos, yPos + 1)) yPos++;
+        hasHardDropped = true;
         break;
       default:
         return;
