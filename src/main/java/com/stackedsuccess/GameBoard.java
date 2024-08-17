@@ -15,6 +15,7 @@ public class GameBoard {
   private int frameCount;
   private int score = 0;
   private int level = 1;
+  private int line = 0;
   private int linesCleared = 0;
   private boolean holdUsed = false;
 
@@ -143,8 +144,19 @@ public class GameBoard {
       }
     }
     linesCleared += fullRows;
+    updateLines(fullRows);
     updateLevel();
     calculateScore(fullRows);
+  }
+
+  /**
+   * Updates the line count based on the number of lines cleared.
+   *
+   * @param line the number of lines cleared
+   */
+  private void updateLines(int fullRows) {
+    line += fullRows;
+    controller.updateLine(line);
   }
 
   /**

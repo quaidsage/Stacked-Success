@@ -143,5 +143,10 @@
             <Font name="Arial" size="36.0" />
          </font>
       </Label>
+      <Label fx:id="lineLabel" layoutX="959.0" layoutY="608.0" prefHeight="46.0" prefWidth="261.0" text="Line: 1">
+         <font>
+            <Font name="Arial" size="36.0" />
+         </font>
+      </Label>
    </children>
 </Pane>
