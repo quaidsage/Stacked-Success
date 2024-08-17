@@ -1,6 +1,7 @@
 package com.stackedsuccess.controllers;
 
 import com.stackedsuccess.GameInstance;
+import com.stackedsuccess.ScoreRecorder;
 import com.stackedsuccess.tetriminos.Tetrimino;
 import java.util.*;
 import javafx.application.Platform;
@@ -269,6 +270,9 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   public void gameOver() {
+    //Save score before exiting
+    ScoreRecorder.saveScore(scoreLabel.getText());
+
     System.exit(0);
   }
 }
