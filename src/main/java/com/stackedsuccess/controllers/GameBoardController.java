@@ -34,6 +34,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   private int score = 0;
   private int line = 0;
   private ArrayList<Node> previousGhostTetrominos = new ArrayList<>();
+  private static Map<String, String> allTetriminoStyles = new HashMap<>();
 
   /**
    * Initialises the game board controller, setting up the game grid and starting the game instance.
@@ -49,6 +50,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     lineLabel.setText("Line: " + line);
     displayGrid.gridLinesVisibleProperty().set(true);
     gameInstance.setTetriminoUpdateListener(this);
+    initTetriminoStyles();
     Platform.runLater(
         () -> {
           gameInstance.start();
@@ -83,7 +85,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
       for (int col = 0; col < layout[row].length; col++) {
         if (layout[row][col] != 0) {
           Pane pane = new Pane();
-          pane.setStyle("-fx-background-color: black;");
+          pane.setStyle("-fx-background-color: " + getTetriminoStyle(tetrimino));
           gameGrid.add(pane, tetrimino.getXPos() + col, tetrimino.getYPos() + row);
         }
       }
@@ -104,7 +106,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
             for (int col = 0; col < layout[row].length; col++) {
               if (layout[row][col] != 0) {
                 Pane pane = new Pane();
-                pane.setStyle("-fx-background-color: black;");
+                pane.setStyle("-fx-background-color: " + getTetriminoStyle(tetrimino));
                 displayGrid.add(pane, tetrimino.getXPos() + col, tetrimino.getYPos() + row);
               }
             }
@@ -275,6 +277,32 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   public void setHoldPieceView(Tetrimino tetrimino) {
     Image image = new Image("/images/" + tetrimino.getClass().getSimpleName() + ".png");
     holdPieceView.setImage(image);
+  }
+
+  /** Method for checking which tetrimino shape is in play, and setting the style accordingly
+   * 
+   * @param tetrimino the tetrimino on screen
+   * @return tetriminoStyle the style of the tetrimino
+   */
+  public String getTetriminoStyle(Tetrimino tetrimino) {
+    String className = tetrimino.getClass().getSimpleName();
+    String borderStyle = "-fx-border-color: black; -fx-border-width: 2px;";
+    String tetriminoStyle = allTetriminoStyles.get(className);
+    return tetriminoStyle + ";" + borderStyle;
+  }
+
+  /** Method for initialising the hashmap of Tetrimino colours
+   * 
+   */
+  private void initTetriminoStyles() {
+    allTetriminoStyles.clear();
+    allTetriminoStyles.put("IShape", "#ff7e00");
+    allTetriminoStyles.put("JShape", "#2c349c");
+    allTetriminoStyles.put("LShape", "#ec1c24");
+    allTetriminoStyles.put("OShape", "#24b44c");
+    allTetriminoStyles.put("SShape", "#a424f4");
+    allTetriminoStyles.put("TShape", "#fcf404");
+    allTetriminoStyles.put("ZShape", "#04b4ec");
   }
 
   /**
