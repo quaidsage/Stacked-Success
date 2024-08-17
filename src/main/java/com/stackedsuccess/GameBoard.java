@@ -2,6 +2,7 @@ package com.stackedsuccess;
 
 import com.stackedsuccess.controllers.GameBoardController;
 import com.stackedsuccess.tetriminos.*;
+import java.io.IOException;
 
 // This class defines the game board and functionality to check board state
 public class GameBoard {
@@ -47,8 +48,12 @@ public class GameBoard {
     frameCount = 0;
   }
 
-  /** Update the state of the board. */
-  public void update() {
+  /**
+   * Update the state of the board.
+   *
+   * @throws IOException
+   */
+  public void update() throws IOException {
     controller.setNextPieceView(nextTetrimino);
     frameCount++;
     // Stagger automatic tetrimino movement based on frame count
@@ -106,8 +111,9 @@ public class GameBoard {
    * Appends new tetrimino to the game board.
    *
    * @param tetrimino the tetrimino to place on the game board.
+   * @throws IOException
    */
-  private void placeTetrimino(Tetrimino tetrimino) {
+  private void placeTetrimino(Tetrimino tetrimino) throws IOException {
     holdUsed = false;
     int[][] layout = tetrimino.getTetriminoLayout();
     for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
