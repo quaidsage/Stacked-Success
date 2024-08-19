@@ -49,7 +49,7 @@ public class Main extends Application {
     scenes.put(SceneName.GAMEBOARD, loadFxml("GameBoard"));
     // BYPASSING MENU FOR TESTING
     Parent root = scenes.get(SceneName.GAMEBOARD);
-    scene = new Scene(root, 1400, 800);
+    scene = new Scene(root, 1300, 900);
     stage.setScene(scene);
     stage.setTitle("Stacked Success");
     stage.show();

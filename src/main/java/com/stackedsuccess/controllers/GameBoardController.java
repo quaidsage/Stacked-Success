@@ -4,10 +4,15 @@ import com.stackedsuccess.GameInstance;
 import com.stackedsuccess.ScoreRecorder;
 import com.stackedsuccess.tetriminos.Tetrimino;
 import java.io.IOException;
+
+import java.io.IOException;
 import java.util.*;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,6 +35,8 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     @FXML ImageView holdPieceView;
     @FXML ImageView nextPieceView;
 
+    @FXML Button escapeButton;
+
     private GameInstance gameInstance = new GameInstance();
     private int score = 0;
     private int line = 0;
@@ -45,9 +52,9 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     @FXML
     public void initialize() {
 
-        scoreLabel.setText("Score:" + score);
-        levelLabel.setText("Level: 1");
-        lineLabel.setText("Line: " + line);
+        scoreLabel.setText("0");
+        levelLabel.setText("1");
+        lineLabel.setText("0");
         displayGrid.gridLinesVisibleProperty().set(true);
         gameInstance.setTetriminoUpdateListener(this);
         initTetriminoStyles();
@@ -238,7 +245,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
      * @param score the current score
      */
     public void updateScore(int score) {
-        Platform.runLater(() -> scoreLabel.setText("Score: " + score));
+        Platform.runLater(() -> scoreLabel.setText(String.valueOf(score)));
     }
 
     /**
@@ -247,7 +254,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
      * @param line the current level
      */
     public void updateLine(int line) {
-        Platform.runLater(() -> lineLabel.setText("Line: " + line));
+        Platform.runLater(() -> lineLabel.setText(String.valueOf(line)));
     }
 
     /**
@@ -256,7 +263,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
      * @param level the current level
      */
     public void updateLevel(int level) {
-        Platform.runLater(() -> levelLabel.setText("Level: " + level));
+        Platform.runLater(() -> levelLabel.setText(String.valueOf(level)));
     }
 
     /**
