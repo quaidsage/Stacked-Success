@@ -45,7 +45,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <Pane fx:id="basePane" onKeyPressed="#onKeyPressed" prefHeight="895.0" prefWidth="1338.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stackedsuccess.controllers.GameBoardController">
    <children>
       <ImageView fitHeight="907.0" fitWidth="1357.0" layoutX="-10.0" pickOnBounds="true">
@@ -225,7 +224,7 @@
             <Font name="Arial Bold" size="36.0" />
          </font>
       </Label>
-      <Button fx:id="escapeButton" layoutX="1181.0" layoutY="17.0" mnemonicParsing="false" onAction="#onEscapeButton" prefHeight="32.0" prefWidth="51.0" style="-fx-border-color: black; -fx-border-width: 3; -fx-border-radius: 18 18 18 18; -fx-background-color: lightgray; -fx-background-radius: 18 18 18 18;" text="||" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="pauseButton" layoutX="1181.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#onClickPauseButton" prefHeight="32.0" prefWidth="51.0" style="-fx-border-color: black; -fx-border-width: 3; -fx-border-radius: 18 18 18 18; -fx-background-color: lightgray; -fx-background-radius: 18 18 18 18;" text="||" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Arial Bold" size="24.0" />
          </font>
