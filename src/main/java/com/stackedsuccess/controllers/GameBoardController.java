@@ -407,11 +407,13 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   public void gameOver() throws IOException {
+    gameInstance.setGameOver(true);
+
     // Save if score is a high score
     if (ScoreRecorder.isHighScore(scoreLabel.getText())) {
       ScoreRecorder.saveScore(scoreLabel.getText());
     }
-    gameInstance.togglePause();
+
     playGameOverAnimation();
     
 

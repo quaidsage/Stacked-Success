@@ -10,7 +10,7 @@ public class LShape extends Tetrimino {
         };
     width = 3;
     height = 3;
-    xPos = 3;
-    yPos = 0;
+    xPos = Tetrimino.DEFAULT_SPAWN_X;
+    yPos = Tetrimino.DEFAULT_SPAWN_Y;
   }
 }
