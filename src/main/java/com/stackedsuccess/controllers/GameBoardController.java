@@ -5,7 +5,11 @@ import com.stackedsuccess.ScoreRecorder;
 import com.stackedsuccess.tetriminos.Tetrimino;
 import java.io.IOException;
 import java.util.*;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -15,7 +19,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class GameBoardController implements GameInstance.TetriminoUpdateListener {
 
@@ -32,6 +40,13 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   @FXML ImageView nextPieceView;
 
   @FXML Button pauseButton;
+
+  @FXML VBox gameOverBox;
+  @FXML Label gameOverLabel;
+  @FXML Label gameOverScoreLabel;
+  @FXML Label gameOverHighScoreLabel;
+  @FXML Button gameOverExitButton;
+  @FXML Button gameOverRestartButton;
 
   private GameInstance gameInstance = new GameInstance();
   private int score = 0;
@@ -301,6 +316,16 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     return tetriminoStyle + ";" + borderStyle;
   }
 
+  @FXML
+    void onClickExit(ActionEvent event) {
+        System.exit(0);
+    }
+
+  @FXML
+    void onClickRestart(ActionEvent event) {
+        // will add functionality once main menu is made
+    }
+
   /** Method for initialising the hashmap of Tetrimino colours */
   private void initTetriminoStyles() {
     allTetriminoStyles.clear();
@@ -314,6 +339,67 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   }
 
   /**
+   * Method for plaing game over animation
+   * 
+   */
+  public void playGameOverAnimation() {
+    int rows = displayGrid.getRowCount();
+    int cols = displayGrid.getColumnCount();
+    Timeline animationTimeline = new Timeline();
+
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+          final int curRow = row;
+          final int curCol = col;
+          int delay = (row * 50); 
+          KeyFrame keyFrame = new KeyFrame(Duration.millis(delay), event -> {
+              Pane pane = new Pane();
+              pane.setStyle("-fx-background-color: lightgrey; -fx-border-color: black; -fx-border-width: 2px;");
+              displayGrid.add(pane, curCol, curRow);
+          });
+          animationTimeline.getKeyFrames().add(keyFrame);
+      }
+    }
+
+    KeyFrame actionsKeyFrame = new KeyFrame(Duration.millis(1000), event -> {
+      displayGrid.gridLinesVisibleProperty().set(false);
+      gameGrid.getChildren().clear();
+      gameOverBox.setVisible(true);
+      gameOverBox.setDisable(false);
+      gameOverExitButton.setDisable(false);
+      gameOverRestartButton.setDisable(false);
+      gameOverExitButton.setVisible(true);
+      gameOverRestartButton.setVisible(true);
+      gameOverScoreLabel.setText("Score: " + scoreLabel.getText());
+      try {
+        gameOverHighScoreLabel.setText("High Score: " + ScoreRecorder.getHighScore());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    });
+    animationTimeline.getKeyFrames().add(actionsKeyFrame);
+
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+          final int curRow = row;
+          final int curCol = col;
+          int delay = 2000 + (row * 50); 
+          KeyFrame keyFrame = new KeyFrame(Duration.millis(delay), event -> {
+              displayGrid.getChildren().removeIf(node -> {
+                  
+                  Integer rowIndex = GridPane.getRowIndex(node);
+                  Integer colIndex = GridPane.getColumnIndex(node);
+                  return rowIndex != null && colIndex != null && rowIndex.intValue() == curRow && colIndex.intValue() == curCol;
+              });
+          });
+          animationTimeline.getKeyFrames().add(keyFrame);
+      }
+    }
+        
+    animationTimeline.play();
+  }
+
+  /**
    * Method for handling game over event, when tetriminos spawn and collide into each other. Exits
    * the game when called
    *
@@ -321,9 +407,14 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   public void gameOver() throws IOException {
-    // Save score before exiting
-    ScoreRecorder.saveScore(scoreLabel.getText());
+    // Save if score is a high score
+    if (ScoreRecorder.isHighScore(scoreLabel.getText())) {
+      ScoreRecorder.saveScore(scoreLabel.getText());
+    }
+    gameInstance.togglePause();
+    playGameOverAnimation();
+    
 
-    System.exit(0);
+    //System.exit(0);
   }
 }
