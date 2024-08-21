@@ -10,7 +10,7 @@ public class IShape extends Tetrimino {
         };
         width = 4;
         height = 4;
-        xPos = 3;
-        yPos = 0;
+        xPos = Tetrimino.DEFAULT_SPAWN_X;
+        yPos = Tetrimino.DEFAULT_SPAWN_Y - 1;
     }
 }
