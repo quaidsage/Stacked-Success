@@ -15,10 +15,4 @@ public class IShape extends Tetrimino {
         xPos = Tetrimino.DEFAULT_SPAWN_X;
         yPos = Tetrimino.DEFAULT_SPAWN_Y - 1;
     }
-
-    @Override
-    public void resetPosition() {
-        xPos = Tetrimino.DEFAULT_SPAWN_X;
-        yPos = Tetrimino.DEFAULT_SPAWN_Y - 1;
-    }
 }
