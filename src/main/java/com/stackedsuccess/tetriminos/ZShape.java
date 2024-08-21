@@ -1,13 +1,13 @@
 package com.stackedsuccess.tetriminos;
 
 public class ZShape extends Tetrimino {
-  public static final int VALUE = 7;
+  public static final int SPAWN_VALUE = 7;
 
   public ZShape() {
     layout =
         new int[][] {
-          {VALUE, VALUE, 0},
-          {0, VALUE, VALUE},
+          {SPAWN_VALUE, SPAWN_VALUE, 0},
+          {0, SPAWN_VALUE, SPAWN_VALUE},
           {0, 0, 0}
         };
     width = 3;

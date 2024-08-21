@@ -122,10 +122,7 @@ public class GameBoard {
     return checkCollision(Tetrimino.DEFAULT_SPAWN_X, Tetrimino.DEFAULT_SPAWN_Y);
   }
 
-  /**
-   * Forces the game loop to update once, primarily used to place
-   * tetrimino pieces instantly.
-   */
+  /** Forces the game loop to update once, primarily used to place tetrimino pieces instantly. */
   public void forceUpdate() {
     forceUpdate = true;
   }
@@ -174,15 +171,14 @@ public class GameBoard {
     if (isSpawnLocationOccupied()) currentTetrimino.setYPos(0);
 
     controller.setNextPieceView(nextTetrimino);
-}
+  }
 
   /**
    * Appends new tetrimino to the game board.
    *
    * @param tetrimino the tetrimino to place on the game board.
-   * @throws IOException by given tetrimino
    */
-  private void placeTetrimino(Tetrimino tetrimino) throws IOException {
+  private void placeTetrimino(Tetrimino tetrimino) {
     int[][] layout = tetrimino.getTetriminoLayout();
     for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
       for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
@@ -229,7 +225,7 @@ public class GameBoard {
 
   /** Updates the level based on the number of lines cleared. */
   private void updateLevel() {
-    level = (int) (totalLinesCleared / 10) + 1;
+    level = (totalLinesCleared / 10) + 1;
     controller.updateLevel(level);
   }
 
@@ -332,8 +328,8 @@ public class GameBoard {
   }
 
   /**
-   * Varies game speed based on level. Levels are easier up to 10, with difficulty
-   * jump at 10, and 15, and kill screen at level 20
+   * Varies game speed based on level. Levels are easier up to 10, with difficulty jump at 10, and
+   * 15, and kill screen at level 20
    */
   private void changeGameSpeed() {
 
@@ -346,8 +342,5 @@ public class GameBoard {
     } else {
       gameSpeed = 3;
     }
-
   }
-
-
 }

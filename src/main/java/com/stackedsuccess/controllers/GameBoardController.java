@@ -5,16 +5,14 @@ import com.stackedsuccess.ScoreRecorder;
 import com.stackedsuccess.tetriminos.*;
 import java.io.IOException;
 import java.util.*;
-
-import javafx.scene.effect.ColorAdjust;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -46,10 +44,12 @@ public class GameBoardController {
   @FXML Button gameOverExitButton;
   @FXML Button gameOverRestartButton;
 
-  private final Image blockImage = new Image("file:src/main/resources/images/block.png", 42,42,true,false);
-  private final Image highlightImage = new Image("file:src/main/resources/images/highlight.png",42,42,true,false);
+  private final Image blockImage =
+      new Image("file:src/main/resources/images/block.png", 42, 42, true, false);
+  private final Image highlightImage =
+      new Image("file:src/main/resources/images/highlight.png", 42, 42, true, false);
 
-  private final int SOLID_BLOCK_VALUE = -2;
+  private static final int SOLID_BLOCK_VALUE = -2;
 
   private final GameInstance gameInstance = new GameInstance();
 
@@ -72,8 +72,7 @@ public class GameBoardController {
   }
 
   /**
-   * Updates the visual display of the game board and actively moving
-   * tetrimino pieces.
+   * Updates the visual display of the game board and actively moving tetrimino pieces.
    *
    * @param board the game board to visualise
    */
@@ -81,21 +80,23 @@ public class GameBoardController {
   public void updateDisplay(int[][] board) {
     int[][] updatedBoard = addMovingPieces(board);
 
-    Platform.runLater(() -> {
-      displayGrid.getChildren().clear();
-      for (int y = 0; y < displayGrid.getRowCount(); y++) {
-        for (int x = 0; x < displayGrid.getColumnCount(); x++) {
-          int blockValue = updatedBoard[y][x];
-          if (blockValue == 0) {continue;}
-          displayGrid.add(getBlock(blockValue), x, y);
-        }
-      }
-    });
+    Platform.runLater(
+        () -> {
+          displayGrid.getChildren().clear();
+          for (int y = 0; y < displayGrid.getRowCount(); y++) {
+            for (int x = 0; x < displayGrid.getColumnCount(); x++) {
+              int blockValue = updatedBoard[y][x];
+              if (blockValue == 0) {
+                continue;
+              }
+              displayGrid.add(getBlock(blockValue), x, y);
+            }
+          }
+        });
   }
 
   /**
-   * Method for handling game over event, when a tetrimino is placed out
-   * of bounds.
+   * Method for handling game over event, when a tetrimino is placed out of bounds.
    *
    * @throws IOException due to ScoreRecorder
    */
@@ -185,8 +186,8 @@ public class GameBoardController {
   }
 
   /**
-   * Adds moving tetrimino piece and ghost piece to game board
-   * array to support visualising on-screen.
+   * Adds moving tetrimino piece and ghost piece to game board array to support visualising
+   * on-screen.
    *
    * @param board the game board
    * @return the game board including current tetrimino and ghost tetrimino
@@ -203,8 +204,7 @@ public class GameBoardController {
   }
 
   /**
-   * Add position of current tetrimino ghost piece to board
-   * to support visualisation.
+   * Add position of current tetrimino ghost piece to board to support visualisation.
    *
    * @param board the game board to append ghost position to
    * @return the updated game board
@@ -228,8 +228,7 @@ public class GameBoardController {
   }
 
   /**
-   * Add position of current tetrimino piece to board to
-   * support visualisation.
+   * Add position of current tetrimino piece to board to support visualisation.
    *
    * @param board the game board to append position to
    * @return the updated game board
@@ -253,38 +252,39 @@ public class GameBoardController {
   }
 
   /**
-   * Get appropriate block image to display in a single cell of
-   * the game board.
+   * Get appropriate block image to display in a single cell of the game board.
    *
    * @param blockValue tetrimino piece value in game board
    * @return ImageView of a game element
    */
   private ImageView getBlock(int blockValue) {
-    if (blockValue == -1) { return new ImageView(highlightImage); }
+    if (blockValue == -1) {
+      return new ImageView(highlightImage);
+    }
 
     ImageView tetriminoBlock = new ImageView(blockImage);
     ColorAdjust colorAdjust = new ColorAdjust();
 
     switch (blockValue) {
-      case IShape.VALUE:
+      case IShape.SPAWN_VALUE:
         colorAdjust.setHue(-0.5);
         break;
-      case JShape.VALUE:
+      case JShape.SPAWN_VALUE:
         colorAdjust.setHue(-0.3);
         break;
-      case LShape.VALUE:
+      case LShape.SPAWN_VALUE:
         colorAdjust.setHue(-0.15);
         break;
-      case OShape.VALUE:
+      case OShape.SPAWN_VALUE:
         colorAdjust.setHue(0);
         break;
-      case SShape.VALUE:
+      case SShape.SPAWN_VALUE:
         colorAdjust.setHue(0.15);
         break;
-      case TShape.VALUE:
+      case TShape.SPAWN_VALUE:
         colorAdjust.setHue(0.3);
         break;
-      case ZShape.VALUE:
+      case ZShape.SPAWN_VALUE:
         colorAdjust.setHue(0.5);
         break;
       case SOLID_BLOCK_VALUE:
@@ -317,17 +317,23 @@ public class GameBoardController {
         final int curRow = row;
         final int curCol = col;
         int delay = (row * 50);
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(delay), event -> {
-          displayGrid.add(getBlock(SOLID_BLOCK_VALUE), curCol, curRow);
-        });
+        KeyFrame keyFrame =
+            new KeyFrame(
+                Duration.millis(delay),
+                event -> {
+                  displayGrid.add(getBlock(SOLID_BLOCK_VALUE), curCol, curRow);
+                });
         animationTimeline.getKeyFrames().add(keyFrame);
       }
     }
 
     // Add delay before revealing game over elements
-    KeyFrame actionsKeyFrame = new KeyFrame(Duration.millis(1000), event -> {
-      enableGameOverElements();
-    });
+    KeyFrame actionsKeyFrame =
+        new KeyFrame(
+            Duration.millis(1000),
+            event -> {
+              enableGameOverElements();
+            });
     animationTimeline.getKeyFrames().add(actionsKeyFrame);
 
     // Remove solid blocks
@@ -335,9 +341,14 @@ public class GameBoardController {
       for (int col = 0; col < cols; col++) {
         int delay = 2000 + (row * 50);
         int finalRow = row;
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(delay), event -> {
-          displayGrid.getChildren().removeIf(node -> finalRow == GridPane.getRowIndex(node));
-        });
+        KeyFrame keyFrame =
+            new KeyFrame(
+                Duration.millis(delay),
+                event -> {
+                  displayGrid
+                      .getChildren()
+                      .removeIf(node -> finalRow == GridPane.getRowIndex(node));
+                });
         animationTimeline.getKeyFrames().add(keyFrame);
       }
     }
