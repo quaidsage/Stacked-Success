@@ -17,15 +17,15 @@ public class TetriminoFactory {
    * @return tetrimino object
    */
   public static Tetrimino createRandomTetrimino() {
-    int type = random.nextInt(7);
+    int type = random.nextInt(7) + 1;
     return switch (type) {
-      case 0 -> new IShape();
-      case 1 -> new JShape();
-      case 2 -> new LShape();
-      case 3 -> new OShape();
-      case 4 -> new SShape();
-      case 5 -> new TShape();
-      case 6 -> new ZShape();
+      case IShape.VALUE -> new IShape();
+      case JShape.VALUE -> new JShape();
+      case LShape.VALUE -> new LShape();
+      case OShape.VALUE -> new OShape();
+      case SShape.VALUE -> new SShape();
+      case TShape.VALUE -> new TShape();
+      case ZShape.VALUE -> new ZShape();
       default -> throw new AssertionError();
     };
   }

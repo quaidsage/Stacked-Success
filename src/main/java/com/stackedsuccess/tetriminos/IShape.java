@@ -1,10 +1,12 @@
 package com.stackedsuccess.tetriminos;
 
 public class IShape extends Tetrimino {
+    public static final int VALUE = 1;
+
     public IShape() {
         layout = new int[][] {
                 {0,0,0,0},
-                {1,1,1,1},
+                {VALUE,VALUE,VALUE,VALUE},
                 {0,0,0,0},
                 {0,0,0,0}
         };
