@@ -11,11 +11,11 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" prefHeight="900.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stackedsuccess.controllers.HomeScreenController">
     <children>
-        <Text id="titleText" layoutX="368.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stacked Success Presents" textAlignment="CENTER" wrappingWidth="483.88671875">
+        <Text id="titleText" layoutX="368.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stacked Success Presents" textAlignment="CENTER" wrappingWidth="483.88671875" styleClass="gen-text">
          <font>
             <Font size="30.0" />
          </font></Text>
-      <Text id="difficultyText" layoutX="593.0" layoutY="635.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Difficulty">
+      <Text styleClass="gen-text" id="difficultyText" layoutX="593.0" layoutY="635.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Difficulty">
          <font>
             <Font size="30.0" />
          </font>

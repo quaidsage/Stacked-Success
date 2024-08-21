@@ -1,5 +1,6 @@
 /* Import the Poppins font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 /* Apply a background color to the AnchorPane */
 .anchor-pane {
@@ -7,7 +8,7 @@
 }
 
 /* Style the Text elements */
-.text {
+.gen-text {
     -fx-fill: #333333; /* Dark grey text color */
     -fx-font-family: "Poppins", sans-serif; /* Stylish and clean font family */
 }
@@ -97,4 +98,37 @@
     -fx-border-color: #388E3C; /* Darker green border for thumb */
     -fx-border-width: 2px; /* Border width */
     -fx-shape: "M 0 0 H 30 V 30 H 0 Z"; /* Larger square shape for thumb */
+}
+
+/* GAMEBOARD STYLING */
+#gameOverLabel {
+    -fx-font-family: "Press Start 2P";
+    -fx-font-size: 30px; 
+    -fx-fill: white; 
+    -fx-opacity: 1;
+    -fx-alignment: center;
+}
+
+#gameOverScoreLabel {
+    -fx-font-family: "Press Start 2P";
+    -fx-font-size: 20px;
+    -fx-font-weight: Normal; 
+    -fx-fill: #ffffff; 
+}
+
+#gameOverHighScoreLabel {
+    -fx-font-family: "Press Start 2P";
+    -fx-font-size: 20px;
+    -fx-font-weight: Normal; 
+    -fx-fill: #ffffff; 
+}
+
+.button#gameOverRestartButton {
+    -fx-text-fill: Black;
+    -fx-font-size: 17px;
+}
+
+.button#gameOverExitButton {
+    -fx-text-fill: Black;
+    -fx-font-size: 17px;
 }

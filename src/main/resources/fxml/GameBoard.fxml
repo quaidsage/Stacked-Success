@@ -45,7 +45,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="basePane" onKeyPressed="#onKeyPressed" prefHeight="900.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stackedsuccess.controllers.GameBoardController">
+<Pane fx:id="basePane" onKeyPressed="#onKeyPressed" prefHeight="900.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stackedsuccess.controllers.GameBoardController">
    <children>
       <Pane fx:id="pauseBackground" onKeyPressed="#onKeyPressed" opacity="0.0" prefHeight="900.0" prefWidth="1350.0" style="-fx-background-color: grey;" />
       <Pane fx:id="pauseLabelBackground" onKeyPressed="#onKeyPressed" opacity="0.0" prefHeight="900.0" prefWidth="1350.0">
@@ -58,24 +58,18 @@
          </children>
       </Pane>
       <Button fx:id="gameOverRestartButton" disable="true" layoutX="54.0" layoutY="567.0" mnemonicParsing="false" onAction="#onClickRestart" prefHeight="40.0" prefWidth="222.0" style="-fx-background-color: #ffffff;" text="Restart / Main Menu" visible="false">
-         <font>
-            <Font name="Agency FB" size="17.0" />
-         </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
       <Button fx:id="gameOverExitButton" disable="true" layoutX="55.0" layoutY="665.0" mnemonicParsing="false" onAction="#onClickExit" prefHeight="40.0" prefWidth="220.0" style="-fx-background-color: #ffffff;" text="EXIT" visible="false">
-         <font>
-            <Font name="Agency FB" size="17.0" />
-         </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
       <VBox alignment="CENTER" layoutX="979.0" layoutY="500.0" prefHeight="330.0" prefWidth="250.0" style="-fx-background-insets: 5; -fx-border-width: 3; -fx-border-style: solid; -fx-border-radius: 18 18 18 18; -fx-background-color: #afafaf; -fx-background-radius: 17 17 17 17;">
          <children>
-            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" text="SCORE" textFill="WHITE">
+            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" styleClass="gen-text" text="SCORE" textFill="WHITE">
                <effect>
                   <DropShadow color="GRAY" offsetX="5.0" offsetY="5.0" />
                </effect>
@@ -83,12 +77,12 @@
                   <Font name="Arial Bold" size="36.0" />
                </font>
             </Label>
-            <Label fx:id="scoreLabel" alignment="CENTER" contentDisplay="TOP" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: LIGHTGRAY; -fx-background-radius: 18 18 18 18; -fx-border-color: BLACK; -fx-border-radius: 18 18 18 18;" text="0">
+            <Label fx:id="scoreLabel" alignment="CENTER" contentDisplay="TOP" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: LIGHTGRAY; -fx-background-radius: 18 18 18 18; -fx-border-color: BLACK; -fx-border-radius: 18 18 18 18;" styleClass="gen-text" text="0">
                <font>
                   <Font name="Arial" size="36.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" text="LINE" textFill="WHITE">
+            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" styleClass="gen-text" text="LINE" textFill="WHITE">
                <effect>
                   <DropShadow color="GRAY" offsetX="5.0" offsetY="5.0" />
                </effect>
@@ -96,12 +90,12 @@
                   <Font name="Arial Bold" size="36.0" />
                </font>
             </Label>
-            <Label fx:id="lineLabel" alignment="CENTER" contentDisplay="TOP" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: LIGHTGRAY; -fx-background-radius: 18 18 18 18; -fx-border-color: BLACK; -fx-border-radius: 18 18 18 18;" text="0">
+            <Label fx:id="lineLabel" alignment="CENTER" contentDisplay="TOP" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: LIGHTGRAY; -fx-background-radius: 18 18 18 18; -fx-border-color: BLACK; -fx-border-radius: 18 18 18 18;" styleClass="gen-text" text="0">
                <font>
                   <Font name="Arial" size="36.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" text="LEVEL" textFill="WHITE">
+            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" styleClass="gen-text" text="LEVEL" textFill="WHITE">
                <effect>
                   <DropShadow color="GRAY" offsetX="5.0" offsetY="5.0" />
                </effect>
@@ -109,7 +103,7 @@
                   <Font name="Arial" size="36.0" />
                </font>
             </Label>
-            <Label fx:id="levelLabel" alignment="CENTER" contentDisplay="TOP" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: LIGHTGRAY; -fx-background-radius: 18 18 18 18; -fx-border-color: BLACK; -fx-border-radius: 18 18 18 18;" text="1">
+            <Label fx:id="levelLabel" alignment="CENTER" contentDisplay="TOP" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: LIGHTGRAY; -fx-background-radius: 18 18 18 18; -fx-border-color: BLACK; -fx-border-radius: 18 18 18 18;" styleClass="gen-text" text="1">
                <font>
                   <Font name="Arial" size="36.0" />
                </font>
@@ -118,7 +112,7 @@
       </VBox>
       <VBox alignment="CENTER" layoutX="979.0" layoutY="176.0" prefHeight="150.0" prefWidth="250.0" style="-fx-background-insets: 5; -fx-border-width: 3; -fx-border-style: solid; -fx-border-radius: 18 18 18 18; -fx-background-color: #afafaf; -fx-background-radius: 17 17 17 17;">
          <children>
-            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" text="NEXT" textFill="WHITE">
+            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" styleClass="gen-text" text="NEXT" textFill="WHITE">
                <effect>
                   <DropShadow color="GRAY" offsetX="5.0" offsetY="5.0" />
                </effect>
@@ -135,7 +129,7 @@
       </VBox>
       <VBox alignment="CENTER" layoutX="55.0" layoutY="176.0" prefHeight="150.0" prefWidth="250.0" style="-fx-background-insets: 5; -fx-border-width: 3; -fx-border-style: solid; -fx-border-radius: 18 18 18 18; -fx-background-color: #afafaf; -fx-background-radius: 17 17 17 17;">
          <children>
-            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" text="HOLD" textFill="WHITE">
+            <Label alignment="CENTER" prefHeight="50.0" prefWidth="315.0" style="-fx-font-weight: BOLD;" styleClass="gen-text" text="HOLD" textFill="WHITE">
                <effect>
                   <DropShadow color="GRAY" offsetX="5.0" offsetY="5.0" />
                </effect>
@@ -143,14 +137,14 @@
                   <Font name="Arial Bold" size="36.0" />
                </font>
             </Label>
-            <Pane fx:id="holdPiece" maxWidth="-Infinity" prefHeight="80.0" prefWidth="200.0" style="-fx-border-color: black; -fx-background-color: LIGHTGRAY; -fx-border-radius: 18 18 18 18; -fx-background-radius: 18 18 18 18;">
+            <Pane fx:id="holdPiece" maxWidth="-Infinity" prefHeight="80.0" prefWidth="200.0" style="-fx-border-color: black; -fx-background-color: LIGHTGRAY; -fx-border-radius: 18 18 18 18; -fx-background-radius: 18 18 18 18;" styleClass="gen-text">
                <children>
                   <ImageView fx:id="holdPieceView" fitHeight="49.0" fitWidth="65.0" layoutX="68.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </Pane>
          </children>
       </VBox>
-      <Label alignment="TOP_LEFT" layoutX="19.0" layoutY="33.0" prefHeight="92.0" prefWidth="364.0" style="-fx-font-weight: BOLD;" text="TETRIS: STACKED SUCCESS" textFill="#525252" wrapText="true">
+      <Label alignment="TOP_LEFT" layoutX="19.0" layoutY="33.0" prefHeight="92.0" prefWidth="364.0" style="-fx-font-weight: BOLD;" styleClass="gen-text" text="TETRIS: STACKED SUCCESS" textFill="#525252" wrapText="true">
          <effect>
             <DropShadow color="GRAY" offsetX="5.0" offsetY="5.0" />
          </effect>
@@ -168,23 +162,15 @@
             <Cursor fx:constant="DISAPPEAR" />
          </cursor>
          <children>
-            <VBox fx:id="gameOverBox" alignment="CENTER" disable="true" layoutX="18.0" layoutY="20.0" prefHeight="820.0" prefWidth="453.0" spacing="60.0" visible="false">
+            <VBox fx:id="gameOverBox" alignment="CENTER" layoutX="12.0" prefHeight="820.0" prefWidth="453.0" spacing="60.0" visible="false">
                <children>
-                  <Label fx:id="gameOverLabel" text="GAME OVER!" textAlignment="CENTER" textFill="WHITE">
+                  <Label id="gameOverLabel" fx:id="gameOverLabel" text="GAME OVER!" textFill="WHITE">
                      <font>
-                        <Font name="Agency FB" size="86.0" />
+                        <Font name="Agency FB" size="60.0" />
                      </font>
                   </Label>
-                  <Label fx:id="gameOverScoreLabel" text="Label" textFill="WHITE">
-                     <font>
-                        <Font name="Agency FB" size="30.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="gameOverHighScoreLabel" layoutX="10.0" layoutY="10.0" text="Label" textFill="WHITE">
-                     <font>
-                        <Font name="Agency FB" size="30.0" />
-                     </font>
-                  </Label>
+                  <Label id="gameOverScoreLabel" fx:id="gameOverScoreLabel" text="Label" textFill="WHITE" />
+                  <Label id="gameOverHighScoreLabel" fx:id="gameOverHighScoreLabel" text="label" textFill="#fcfcfc" />
                </children>
             </VBox>
          </children>
