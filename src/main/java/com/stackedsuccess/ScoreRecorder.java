@@ -2,6 +2,7 @@ package com.stackedsuccess;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -57,7 +58,9 @@ public class ScoreRecorder {
     try (BufferedReader buffread = new BufferedReader(new FileReader(SCOREFILE))) {
       String line;
       while ((line = buffread.readLine()) != null) {
-        scores.add(Integer.parseInt(line));
+        if (!line.trim().isEmpty()) { // Skip empty lines
+          scores.add(Integer.parseInt(line));
+        }
       }
     }
     return scores;
@@ -74,6 +77,25 @@ public class ScoreRecorder {
       for (int score : scores) {
         writer.write(String.valueOf(score));
         writer.newLine();
+      }
+    }
+  }
+
+  /** Create a score file if it does not exist. */
+  public static void createScoreFile() {
+    File scoreFile = new File(SCOREFILE);
+    if (!scoreFile.exists()) {
+      try {
+        boolean isFileCreated = scoreFile.createNewFile();
+        if (!isFileCreated) {
+          // Retry creating the file
+          isFileCreated = scoreFile.createNewFile();
+          if (!isFileCreated) {
+            throw new IOException("Failed to create score file after retrying.");
+          }
+        }
+      } catch (IOException e) {
+        throw new IllegalArgumentException("Creating score file", e);
       }
     }
   }

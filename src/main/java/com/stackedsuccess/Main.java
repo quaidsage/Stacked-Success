@@ -55,6 +55,8 @@ public class Main extends Application {
    */
   @Override
   public void start(final Stage stage) throws IOException {
+    ScoreRecorder.createScoreFile();
+
     SceneManager.addScene(AppUI.MAIN_MENU, loadFxml("HomeScreen"));
 
     scene = new Scene(SceneManager.getScene(AppUI.MAIN_MENU), 1300, 900);
