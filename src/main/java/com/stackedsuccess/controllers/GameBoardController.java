@@ -62,6 +62,7 @@ public class GameBoardController {
   @FXML
   public void initialize() {
     resetLabels();
+    basePane.requestFocus();
 
     Platform.runLater(
         () -> {
@@ -126,6 +127,7 @@ public class GameBoardController {
   @FXML
   public void onClickPauseButton() {
     gameInstance.togglePause();
+    basePane.requestFocus();
   }
 
   @FXML

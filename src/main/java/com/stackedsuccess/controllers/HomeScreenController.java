@@ -1,5 +1,14 @@
 package com.stackedsuccess.controllers;
 
+import com.stackedsuccess.Main;
+import com.stackedsuccess.SceneManager;
+import com.stackedsuccess.SceneManager.AppUI;
+import java.io.IOException;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.Slider;
+import javafx.scene.input.KeyCode;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,16 +25,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 
 public class HomeScreenController {
+  @FXML Slider difficultySlider;
 
     @FXML
     private Button pastScoresButton;
     @FXML
     private ListView<String> pastScores;
-
+  
+  @FXML
     public void initialize() {
+      difficultySlider.requestFocus();
         List<String> scores = loadScoresFromFile("score.txt");
         pastScores.getItems().addAll(scores);
     }
@@ -53,20 +64,30 @@ public class HomeScreenController {
         System.exit(0);
     }
 
-    public void startGame() {
-        GameInstance gameInstance = new GameInstance();
-        gameInstance.start();
-        Stage stage = (Stage) Main.getPrimaryStage(); // Assumes there's a method in Main to get the primary stage
-        Parent gameBoard = Main.getScene(SceneName.GAMEBOARD);
-        Scene scene = new Scene(gameBoard);
-        stage.setScene(scene);
-        gameBoard.requestFocus(); // Ensures the game board has focus for key events
-    }
+  public void exitGame() {
+    System.exit(0);
+  }
 
-    public void onKeyPressed(KeyEvent event) {
-        // Your code here
-    }
+  @FXML
+  public void startGame() throws IOException {
+    SceneManager.addScene(AppUI.GAME, loadFxml("GameBoard"));
+    Main.setUi(AppUI.GAME);
+  }
 
+  public static Parent loadFxml(final String fxml) throws IOException {
+    return new FXMLLoader(Main.class.getResource("/fxml/" + fxml + ".fxml")).load();
+  }
+
+  public void onKeyPressed(KeyEvent event) {
+    difficultySlider.requestFocus();
+    if (event.getCode() == KeyCode.SPACE) {
+      try {
+        startGame();
+      } catch (IOException e) {
+        // Do nothing for now
+      }
+    }
+ 
     @FXML
     public void showPastScores() {
         if (pastScores.isVisible()) {
