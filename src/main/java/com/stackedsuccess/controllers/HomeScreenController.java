@@ -14,10 +14,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class HomeScreenController {
@@ -52,15 +55,20 @@ public class HomeScreenController {
         return scores;
     }
 
-    public void exitGame() {
-        System.exit(0);
-    }
+  public void exitGame() {
+    System.exit(0);
+  }
 
-    @FXML
-    public void startGame() throws IOException {
-        SceneManager.addScene(AppUI.GAME, loadFxml("GameBoard"));
-        Main.setUi(AppUI.GAME);
-    }
+  @FXML
+  public void startGame() throws IOException {
+      int initialLevel = (int) difficultySlider.getValue(); // Get the level from the slider
+      FXMLLoader loader = new FXMLLoader(Main.class.getResource("/fxml/GameBoard.fxml"));
+      Parent root = loader.load();
+      GameBoardController controller = loader.getController();
+      controller.updateLevel(initialLevel); // Set the initial level
+      SceneManager.addScene(AppUI.GAME, root);
+      Main.setUi(AppUI.GAME);
+  }
 
     public static Parent loadFxml(final String fxml) throws IOException {
         return new FXMLLoader(Main.class.getResource("/fxml/" + fxml + ".fxml")).load();
