@@ -45,7 +45,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="basePane" onKeyPressed="#onKeyPressed" prefHeight="900.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stackedsuccess.controllers.GameBoardController">
+<Pane fx:id="basePane" onKeyPressed="#onKeyPressed" prefHeight="900.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stackedsuccess.controllers.GameBoardController">
    <children>
       <Button fx:id="gameOverRestartButton" disable="true" layoutX="54.0" layoutY="567.0" mnemonicParsing="false" onAction="#onClickRestart" prefHeight="40.0" prefWidth="222.0" style="-fx-background-color: #ffffff;" text="Restart / Main Menu" visible="false">
          <font>
@@ -118,7 +118,7 @@
             </Label>
             <Pane fx:id="holdPiece1" maxWidth="-Infinity" prefHeight="80.0" prefWidth="200.0" style="-fx-border-color: black; -fx-background-color: LIGHTGRAY; -fx-border-radius: 18 18 18 18; -fx-background-radius: 18 18 18 18;">
                <children>
-                  <ImageView fx:id="nextPieceView" fitHeight="83.0" fitWidth="86.0" layoutX="57.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="nextPieceView" fitHeight="49.0" fitWidth="65.0" layoutX="67.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </Pane>
          </children>
@@ -135,7 +135,7 @@
             </Label>
             <Pane fx:id="holdPiece" maxWidth="-Infinity" prefHeight="80.0" prefWidth="200.0" style="-fx-border-color: black; -fx-background-color: LIGHTGRAY; -fx-border-radius: 18 18 18 18; -fx-background-radius: 18 18 18 18;">
                <children>
-                  <ImageView fx:id="holdPieceView" fitHeight="83.0" fitWidth="94.0" layoutX="48.0" layoutY="-8.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="holdPieceView" fitHeight="49.0" fitWidth="65.0" layoutX="68.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </Pane>
          </children>

@@ -15,35 +15,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.stackedsuccess.GameInstance;
-import com.stackedsuccess.Main;
-import com.stackedsuccess.Main.SceneName;
 
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 
 public class HomeScreenController {
-  @FXML Slider difficultySlider;
+    @FXML Slider difficultySlider;
+
+    @FXML private Button pastScoresButton;
+    @FXML private ListView<String> pastScores;
 
     @FXML
-    private Button pastScoresButton;
-    @FXML
-    private ListView<String> pastScores;
-  
-  @FXML
     public void initialize() {
-      difficultySlider.requestFocus();
-        List<String> scores = loadScoresFromFile("score.txt");
-        pastScores.getItems().addAll(scores);
+         difficultySlider.requestFocus();
+         List<String> scores = loadScoresFromFile("score.txt");
+         pastScores.getItems().addAll(scores);
     }
 
-        /**
+    /**
      * Reads scores from a file and returns them as a list of strings.
-     * 
+     *
      * @param filePath the path to the score file
      * @return list of scores as strings
      */
@@ -64,30 +56,27 @@ public class HomeScreenController {
         System.exit(0);
     }
 
-  public void exitGame() {
-    System.exit(0);
-  }
-
-  @FXML
-  public void startGame() throws IOException {
-    SceneManager.addScene(AppUI.GAME, loadFxml("GameBoard"));
-    Main.setUi(AppUI.GAME);
-  }
-
-  public static Parent loadFxml(final String fxml) throws IOException {
-    return new FXMLLoader(Main.class.getResource("/fxml/" + fxml + ".fxml")).load();
-  }
-
-  public void onKeyPressed(KeyEvent event) {
-    difficultySlider.requestFocus();
-    if (event.getCode() == KeyCode.SPACE) {
-      try {
-        startGame();
-      } catch (IOException e) {
-        // Do nothing for now
-      }
+    @FXML
+    public void startGame() throws IOException {
+        SceneManager.addScene(AppUI.GAME, loadFxml("GameBoard"));
+        Main.setUi(AppUI.GAME);
     }
- 
+
+    public static Parent loadFxml(final String fxml) throws IOException {
+        return new FXMLLoader(Main.class.getResource("/fxml/" + fxml + ".fxml")).load();
+    }
+
+    public void onKeyPressed(KeyEvent event) {
+        difficultySlider.requestFocus();
+        if (event.getCode() == KeyCode.SPACE) {
+            try {
+                startGame();
+            } catch (IOException e) {
+                // Do nothing for now
+            }
+        }
+        }
+
     @FXML
     public void showPastScores() {
         if (pastScores.isVisible()) {
@@ -96,5 +85,4 @@ public class HomeScreenController {
             pastScores.setVisible(true);
         }
     }
-
 }
