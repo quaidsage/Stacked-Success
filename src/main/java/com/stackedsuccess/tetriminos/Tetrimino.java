@@ -4,6 +4,8 @@ import com.stackedsuccess.Action;
 import com.stackedsuccess.GameBoard;
 
 public abstract class Tetrimino {
+  protected static int value;
+  
   public static int DEFAULT_SPAWN_X = 3;
   public static int DEFAULT_SPAWN_Y = 2;
 
@@ -45,9 +47,6 @@ public abstract class Tetrimino {
       default:
         throw new IllegalArgumentException("Invalid tetrimino action " + action + " given.");
     }
-
-    // Calculate ghost position
-    updateGhostPosition(gameBoard);
   }
 
   /** Resets the tetrimino piece to default position. */
@@ -87,6 +86,15 @@ public abstract class Tetrimino {
   public void updateGhostPosition(GameBoard gameBoard) {
     int ghostY = calculateGhostY(gameBoard);
     gameBoard.getController().updateGhostBlock(this, ghostY);
+  }
+
+  /**
+   * Check if the current tetrimino piece can move down one cell from current position.
+   *
+   * @return whether current tetrimino can move down one or not
+   */
+  public boolean canMoveDown(GameBoard gameBoard) {
+    return !gameBoard.checkCollision(xPos, yPos+ 1);
   }
 
   /**

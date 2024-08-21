@@ -57,7 +57,6 @@ public class GameBoard {
    */
   public void setController(GameBoardController controller) {
     this.controller = controller;
-    currentTetrimino.updateGhostPosition(this);
   }
 
   /**
@@ -72,6 +71,8 @@ public class GameBoard {
   /** Update the state of the board. */
   public void update() throws IOException {
     frameCount++;
+    controller.updateDisplay(board);
+
     // Stagger automatic tetrimino movement based on frame count
     if (frameCount % gameSpeed == 0 || forceUpdate) {
       forceUpdate = false;
@@ -163,8 +164,6 @@ public class GameBoard {
     placeTetrimino(currentTetrimino);
     if (checkGameOver()) return;
 
-    controller.updateDisplayGrid(currentTetrimino);
-
     clearFullRows();
 
     currentTetrimino = nextTetrimino;
@@ -175,7 +174,6 @@ public class GameBoard {
     if (isSpawnLocationOccupied()) currentTetrimino.setYPos(0);
 
     controller.setNextPieceView(nextTetrimino);
-    currentTetrimino.updateGhostPosition(this);
 }
 
   /**
@@ -219,7 +217,6 @@ public class GameBoard {
       if (isRowFull(y, board[y])) {
         newLinesCleared++;
         shiftRowsDown(y);
-        controller.clearLine(y);
       }
     }
     calculateScore(newLinesCleared);

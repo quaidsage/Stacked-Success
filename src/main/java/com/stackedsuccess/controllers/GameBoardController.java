@@ -2,10 +2,11 @@ package com.stackedsuccess.controllers;
 
 import com.stackedsuccess.GameInstance;
 import com.stackedsuccess.ScoreRecorder;
-import com.stackedsuccess.tetriminos.Tetrimino;
+import com.stackedsuccess.tetriminos.*;
 import java.io.IOException;
 import java.util.*;
 
+import javafx.scene.effect.ColorAdjust;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -20,16 +21,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class GameBoardController implements GameInstance.TetriminoUpdateListener {
+public class GameBoardController {
 
   @FXML Pane basePane;
   @FXML Pane holdPiece;
-  @FXML GridPane gameGrid;
   @FXML GridPane displayGrid;
 
   @FXML Label scoreLabel;
@@ -48,11 +46,12 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   @FXML Button gameOverExitButton;
   @FXML Button gameOverRestartButton;
 
-  private GameInstance gameInstance = new GameInstance();
-  private int score = 0;
-  private int line = 0;
-  private ArrayList<Node> previousGhostTetrominos = new ArrayList<>();
-  private static Map<String, String> allTetriminoStyles = new HashMap<>();
+  private final Image blockImage = new Image("file:src/main/resources/images/block.png", 42,42,true,false);
+  private final Image highlightImage = new Image("file:src/main/resources/images/highlight.png",42,42,true,false);
+
+  private final int SOLID_BLOCK_VALUE = -2;
+
+  private final GameInstance gameInstance = new GameInstance();
 
   /**
    * Initialises the game board controller, setting up the game grid and starting the game instance.
@@ -62,136 +61,54 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   public void initialize() {
+    resetLabels();
 
-    scoreLabel.setText("0");
-    levelLabel.setText("1");
-    lineLabel.setText("0");
-    displayGrid.gridLinesVisibleProperty().set(true);
-    gameInstance.setTetriminoUpdateListener(this);
-    initTetriminoStyles();
     Platform.runLater(
         () -> {
           gameInstance.start();
-          gameInstance.getGameBoard().setController(this); // Set the controller
+          gameInstance.getGameBoard().setController(this);
           setWindowCloseHandler(getStage());
         });
   }
 
   /**
-   * Listener for tetrimino updates, updates the game grid with the new tetrimino layout.
+   * Updates the visual display of the game board and actively moving
+   * tetrimino pieces.
    *
-   * @param tetrimino the tetrimino that is currently on the board
-   */
-  @Override
-  public void onTetriminoUpdate(Tetrimino tetrimino) {
-    Platform.runLater(() -> renderTetrimino(tetrimino));
-  }
-
-  /**
-   * Displays on the game grid where the tetrimino is located. Sets the background color of the grid
-   * to be black where the tetrimino is located.
-   *
-   * @param tetrimino the tetrimino to be displayed on the grid
+   * @param board the game board to visualise
    */
   @FXML
-  private void renderTetrimino(Tetrimino tetrimino) {
-    if (gameInstance.isGameOver()) return;
+  public void updateDisplay(int[][] board) {
+    int[][] updatedBoard = addMovingPieces(board);
 
-    gameGrid.getChildren().clear(); // Clear previous tetrimino
-    gameGrid.gridLinesVisibleProperty().setValue(true);
-
-    int[][] layout = tetrimino.getTetriminoLayout();
-    for (int row = 0; row < layout.length; row++) {
-      for (int col = 0; col < layout[row].length; col++) {
-        if (layout[row][col] != 0) {
-          Pane pane = new Pane();
-          pane.setStyle("-fx-background-color: " + getTetriminoStyle(tetrimino));
-          gameGrid.add(pane, tetrimino.getXPos() + col, tetrimino.getYPos() + row);
+    Platform.runLater(() -> {
+      displayGrid.getChildren().clear();
+      for (int y = 0; y < displayGrid.getRowCount(); y++) {
+        for (int x = 0; x < displayGrid.getColumnCount(); x++) {
+          int blockValue = updatedBoard[y][x];
+          if (blockValue == 0) {continue;}
+          displayGrid.add(getBlock(blockValue), x, y);
         }
       }
+    });
+  }
+
+  /**
+   * Method for handling game over event, when a tetrimino is placed out
+   * of bounds.
+   *
+   * @throws IOException due to ScoreRecorder
+   */
+  @FXML
+  public void gameOver() throws IOException {
+    gameInstance.setGameOver(true);
+
+    // Save if score is a high score
+    if (ScoreRecorder.isHighScore(scoreLabel.getText())) {
+      ScoreRecorder.saveScore(scoreLabel.getText());
     }
-  }
 
-  /**
-   * Updates the display grid above the game grid with position of the static tetriminos.
-   *
-   * @param tetrimino the tetrimino to be displayed on the grid
-   */
-  @FXML
-  public void updateDisplayGrid(Tetrimino tetrimino) {
-    if (gameInstance.isGameOver()) return;
-
-    Platform.runLater(
-        () -> {
-          int[][] layout = tetrimino.getTetriminoLayout();
-          for (int row = 0; row < layout.length; row++) {
-            for (int col = 0; col < layout[row].length; col++) {
-              if (layout[row][col] != 0) {
-                Pane pane = new Pane();
-                pane.setStyle("-fx-background-color: " + getTetriminoStyle(tetrimino));
-                displayGrid.add(pane, tetrimino.getXPos() + col, tetrimino.getYPos() + row);
-              }
-            }
-          }
-        });
-  }
-
-  /**
-   * Clears the line at the given index and shifts all rows above downwards. Also increments the
-   * score and level if needed.
-   *
-   * @param lineIndex the index of the line to be cleared
-   */
-  @FXML
-  public void clearLine(int lineIndex) {
-    if (gameInstance.isGameOver()) return;
-
-    Platform.runLater(
-        () -> {
-          displayGrid
-              .getChildren()
-              .removeIf(
-                  node -> {
-                    Integer rowIndex = GridPane.getRowIndex(node);
-                    return rowIndex != null && rowIndex.intValue() == lineIndex;
-                  });
-
-          // Shift rows down
-          for (Node node : displayGrid.getChildren()) {
-            Integer rowIndex = GridPane.getRowIndex(node);
-            if (rowIndex != null && rowIndex < lineIndex) {
-              GridPane.setRowIndex(node, rowIndex + 1);
-            }
-          }
-        });
-  }
-
-  /**
-   * Updates the ghost block on the display grid.
-   *
-   * @param tetrimino the tetrimino to be displayed as a ghost block
-   * @param ghostY the y position of the ghost block
-   */
-  @FXML
-  public void updateGhostBlock(Tetrimino tetrimino, int ghostY) {
-    Platform.runLater(
-        () -> {
-          // Clear previous ghost block
-          displayGrid.getChildren().removeAll(previousGhostTetrominos);
-          previousGhostTetrominos.clear();
-
-          int[][] layout = tetrimino.getTetriminoLayout();
-          for (int row = 0; row < layout.length; row++) {
-            for (int col = 0; col < layout[row].length; col++) {
-              if (layout[row][col] != 0) {
-                Pane pane = new Pane();
-                pane.setStyle("-fx-background-color: lightgrey;");
-                displayGrid.add(pane, tetrimino.getXPos() + col, ghostY + row);
-                previousGhostTetrominos.add(pane);
-              }
-            }
-          }
-        });
+    playGameOverAnimation();
   }
 
   /**
@@ -210,28 +127,14 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     gameInstance.togglePause();
   }
 
-  /**
-   * Creates event handler to stop the game on window close.
-   *
-   * @param stage the stage containing the game scene
-   */
-  private void setWindowCloseHandler(Stage stage) {
-    stage.setOnCloseRequest(
-        event -> {
-          gameInstance.setGameOver(true);
-
-          // TODO: Remove when more scenes added.
-          System.exit(0);
-        });
+  @FXML
+  void onClickExit(ActionEvent event) {
+    System.exit(0);
   }
 
-  /**
-   * Get current stage pane.
-   *
-   * @return current stage
-   */
-  private Stage getStage() {
-    return (Stage) basePane.getScene().getWindow();
+  @FXML
+  void onClickRestart(ActionEvent event) {
+    // will add functionality once main menu is made
   }
 
   /**
@@ -282,118 +185,203 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
   }
 
   /**
-   * Method for checking which tetrimino shape is in play, and setting the style accordingly
+   * Adds moving tetrimino piece and ghost piece to game board
+   * array to support visualising on-screen.
    *
-   * @param tetrimino the tetrimino on screen
-   * @return tetriminoStyle the style of the tetrimino
+   * @param board the game board
+   * @return the game board including current tetrimino and ghost tetrimino
    */
-  public String getTetriminoStyle(Tetrimino tetrimino) {
-    String className = tetrimino.getClass().getSimpleName();
-    String borderStyle = "-fx-border-color: black; -fx-border-width: 2px;";
-    String tetriminoStyle = allTetriminoStyles.get(className);
-    return tetriminoStyle + ";" + borderStyle;
+  private int[][] addMovingPieces(int[][] board) {
+    // Create clone to separate from original reference
+    int[][] newBoard = new int[board.length][];
+    for (int i = 0; i < board.length; i++) {
+      newBoard[i] = board[i].clone();
+    }
+
+    int[][] updatedBoard = addGhostTetriminoPiece(newBoard);
+    return addCurrentTetriminoPosition(updatedBoard);
   }
 
-  @FXML
-    void onClickExit(ActionEvent event) {
-        System.exit(0);
+  /**
+   * Add position of current tetrimino ghost piece to board
+   * to support visualisation.
+   *
+   * @param board the game board to append ghost position to
+   * @return the updated game board
+   */
+  private int[][] addGhostTetriminoPiece(int[][] board) {
+    Tetrimino currentTetrimino = gameInstance.getGameBoard().getCurrentTetrimino();
+    int xPos = currentTetrimino.getXPos();
+    int yPosGhost = currentTetrimino.calculateGhostY(gameInstance.getGameBoard());
+    int width = currentTetrimino.getWidth();
+    int height = currentTetrimino.getHeight();
+    int[][] tetriminoLayout = currentTetrimino.getTetriminoLayout();
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if (tetriminoLayout[y][x] != 0) {
+          board[yPosGhost + y][xPos + x] = -1;
+        }
+      }
     }
 
-  @FXML
-    void onClickRestart(ActionEvent event) {
-        // will add functionality once main menu is made
+    return board;
+  }
+
+  /**
+   * Add position of current tetrimino piece to board to
+   * support visualisation.
+   *
+   * @param board the game board to append position to
+   * @return the updated game board
+   */
+  private int[][] addCurrentTetriminoPosition(int[][] board) {
+    Tetrimino currentTetrimino = gameInstance.getGameBoard().getCurrentTetrimino();
+    int xPos = currentTetrimino.getXPos();
+    int yPos = currentTetrimino.getYPos();
+    int width = currentTetrimino.getWidth();
+    int height = currentTetrimino.getHeight();
+    int[][] tetriminoLayout = currentTetrimino.getTetriminoLayout();
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if (tetriminoLayout[y][x] != 0) {
+          board[yPos + y][xPos + x] = tetriminoLayout[y][x];
+        }
+      }
+    }
+    return board;
+  }
+
+  /**
+   * Get appropriate block image to display in a single cell of
+   * the game board.
+   *
+   * @param blockValue tetrimino piece value in game board
+   * @return ImageView of a game element
+   */
+  private ImageView getBlock(int blockValue) {
+    if (blockValue == -1) { return new ImageView(highlightImage); }
+
+    ImageView tetriminoBlock = new ImageView(blockImage);
+    ColorAdjust colorAdjust = new ColorAdjust();
+
+    switch (blockValue) {
+      case IShape.VALUE:
+        colorAdjust.setHue(-0.5);
+        break;
+      case JShape.VALUE:
+        colorAdjust.setHue(-0.3);
+        break;
+      case LShape.VALUE:
+        colorAdjust.setHue(-0.15);
+        break;
+      case OShape.VALUE:
+        colorAdjust.setHue(0);
+        break;
+      case SShape.VALUE:
+        colorAdjust.setHue(0.15);
+        break;
+      case TShape.VALUE:
+        colorAdjust.setHue(0.3);
+        break;
+      case ZShape.VALUE:
+        colorAdjust.setHue(0.5);
+        break;
+      case SOLID_BLOCK_VALUE:
+        colorAdjust.setSaturation(-1);
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown shape " + blockValue);
     }
 
-  /** Method for initialising the hashmap of Tetrimino colours */
-  private void initTetriminoStyles() {
-    allTetriminoStyles.clear();
-    allTetriminoStyles.put("IShape", "#ff7e00");
-    allTetriminoStyles.put("JShape", "#2c349c");
-    allTetriminoStyles.put("LShape", "#ec1c24");
-    allTetriminoStyles.put("OShape", "#24b44c");
-    allTetriminoStyles.put("SShape", "#a424f4");
-    allTetriminoStyles.put("TShape", "#fcf404");
-    allTetriminoStyles.put("ZShape", "#04b4ec");
+    tetriminoBlock.setEffect(colorAdjust);
+    return tetriminoBlock;
+  }
+
+  /** Reset game scoring labels to default. */
+  private void resetLabels() {
+    scoreLabel.setText("0");
+    levelLabel.setText("1");
+    lineLabel.setText("0");
   }
 
   /** Method for playing game over animation. */
-  public void playGameOverAnimation() {
+  private void playGameOverAnimation() {
     int rows = displayGrid.getRowCount();
     int cols = displayGrid.getColumnCount();
     Timeline animationTimeline = new Timeline();
 
+    // Fill board with solid blocks
     for (int row = 0; row < rows; row++) {
       for (int col = 0; col < cols; col++) {
-          final int curRow = row;
-          final int curCol = col;
-          int delay = (row * 50); 
-          KeyFrame keyFrame = new KeyFrame(Duration.millis(delay), event -> {
-              Pane pane = new Pane();
-              pane.setStyle("-fx-background-color: lightgrey; -fx-border-color: black; -fx-border-width: 2px;");
-              displayGrid.add(pane, curCol, curRow);
-          });
-          animationTimeline.getKeyFrames().add(keyFrame);
+        final int curRow = row;
+        final int curCol = col;
+        int delay = (row * 50);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(delay), event -> {
+          displayGrid.add(getBlock(SOLID_BLOCK_VALUE), curCol, curRow);
+        });
+        animationTimeline.getKeyFrames().add(keyFrame);
       }
     }
 
+    // Add delay before revealing game over elements
     KeyFrame actionsKeyFrame = new KeyFrame(Duration.millis(1000), event -> {
-      displayGrid.gridLinesVisibleProperty().set(false);
-      gameGrid.getChildren().clear();
-      gameOverBox.setVisible(true);
-      gameOverBox.setDisable(false);
-      gameOverExitButton.setDisable(false);
-      gameOverRestartButton.setDisable(false);
-      gameOverExitButton.setVisible(true);
-      gameOverRestartButton.setVisible(true);
-      gameOverScoreLabel.setText("Score: " + scoreLabel.getText());
-      try {
-        gameOverHighScoreLabel.setText("High Score: " + ScoreRecorder.getHighScore());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      enableGameOverElements();
     });
     animationTimeline.getKeyFrames().add(actionsKeyFrame);
 
+    // Remove solid blocks
     for (int row = 0; row < rows; row++) {
       for (int col = 0; col < cols; col++) {
-          final int curRow = row;
-          final int curCol = col;
-          int delay = 2000 + (row * 50); 
-          KeyFrame keyFrame = new KeyFrame(Duration.millis(delay), event -> {
-              displayGrid.getChildren().removeIf(node -> {
-                  
-                  Integer rowIndex = GridPane.getRowIndex(node);
-                  Integer colIndex = GridPane.getColumnIndex(node);
-                  return rowIndex != null && colIndex != null && rowIndex.intValue() == curRow && colIndex.intValue() == curCol;
-              });
-          });
-          animationTimeline.getKeyFrames().add(keyFrame);
+        int delay = 2000 + (row * 50);
+        int finalRow = row;
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(delay), event -> {
+          displayGrid.getChildren().removeIf(node -> finalRow == GridPane.getRowIndex(node));
+        });
+        animationTimeline.getKeyFrames().add(keyFrame);
       }
     }
-        
+
     animationTimeline.play();
   }
 
-  /**
-   * Method for handling game over event, when tetriminos spawn and collide into each other. Exits
-   * the game when called
-   *
-   * @throws IOException
-   */
-  @FXML
-  public void gameOver() throws IOException {
-    gameInstance.setGameOver(true);
-
-    // Save if score is a high score
-    if (ScoreRecorder.isHighScore(scoreLabel.getText())) {
-      ScoreRecorder.saveScore(scoreLabel.getText());
+  /** Handles the enabling of elements related to game over screen. */
+  private void enableGameOverElements() {
+    gameOverBox.setVisible(true);
+    gameOverBox.setDisable(false);
+    gameOverExitButton.setDisable(false);
+    gameOverRestartButton.setDisable(false);
+    gameOverExitButton.setVisible(true);
+    gameOverRestartButton.setVisible(true);
+    gameOverScoreLabel.setText("Score: " + scoreLabel.getText());
+    try {
+      gameOverHighScoreLabel.setText("High Score: " + ScoreRecorder.getHighScore());
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Issue regarding ScoreReader");
     }
+  }
 
-    Platform.runLater(() -> gameGrid.getChildren().clear());
+  /**
+   * Creates event handler to stop the game on window close.
+   *
+   * @param stage the stage containing the game scene
+   */
+  private void setWindowCloseHandler(Stage stage) {
+    stage.setOnCloseRequest(
+        event -> {
+          gameInstance.setGameOver(true);
 
-    playGameOverAnimation();
-    
+          // TODO: Remove when more scenes added.
+          System.exit(0);
+        });
+  }
 
-    //System.exit(0);
+  /**
+   * Get current stage pane.
+   *
+   * @return current stage
+   */
+  private Stage getStage() {
+    return (Stage) basePane.getScene().getWindow();
   }
 }

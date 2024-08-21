@@ -1,10 +1,12 @@
 package com.stackedsuccess.tetriminos;
 
 public class JShape extends Tetrimino {
+    public static final int VALUE = 2;
+
     public JShape() {
         layout = new int[][] {
-                {1,0,0},
-                {1,1,1},
+                {VALUE,0,0},
+                {VALUE,VALUE,VALUE},
                 {0,0,0}
         };
         width = 3;

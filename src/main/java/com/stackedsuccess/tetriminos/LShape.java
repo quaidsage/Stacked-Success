@@ -1,10 +1,13 @@
 package com.stackedsuccess.tetriminos;
 
 public class LShape extends Tetrimino {
+  public static final int VALUE = 3;
+
   public LShape() {
-    layout = new int[][] {
-          {0, 0, 1},
-          {1, 1, 1},
+    layout =
+        new int[][] {
+          {0, 0, VALUE},
+          {VALUE, VALUE, VALUE},
           {0, 0, 0}
         };
     width = 3;
