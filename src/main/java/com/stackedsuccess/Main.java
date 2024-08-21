@@ -16,9 +16,11 @@ public class Main extends Application {
     GAMEBOARD
   }
 
-  private Map<SceneName, Parent> scenes = new HashMap<>();
+  private static Map<SceneName, Parent> scenes = new HashMap<>();
 
   private Scene scene;
+
+  private static Stage primaryStage;
 
   public static void main(String[] args) {
     launch();
@@ -44,12 +46,14 @@ public class Main extends Application {
    */
   @Override
   public void start(final Stage stage) throws IOException {
+    primaryStage = stage;  // Store the primary stage
 
-    scenes.put(SceneName.MENU, loadFxml("GameScreen"));
+    scenes.put(SceneName.MENU, loadFxml("HomeScreen"));
     scenes.put(SceneName.GAMEBOARD, loadFxml("GameBoard"));
     // BYPASSING MENU FOR TESTING
-    Parent root = scenes.get(SceneName.GAMEBOARD);
+    Parent root = scenes.get(SceneName.MENU);
     scene = new Scene(root, 1300, 900);
+    scene.getStylesheets().add(getClass().getResource("/css/homescreen.css").toExternalForm());
     stage.setScene(scene);
     stage.setTitle("Stacked Success");
     stage.show();
@@ -60,4 +64,15 @@ public class Main extends Application {
           System.exit(0);
         });
   }
+
+  // Method to get the primary stage
+  public static Stage getPrimaryStage() {
+    return primaryStage;
+  }
+
+  // Method to get a specific scene
+  public static Parent getScene(SceneName sceneName) {
+    return scenes.get(sceneName);
+  }
+  
 }

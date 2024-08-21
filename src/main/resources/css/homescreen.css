@@ -1,0 +1,100 @@
+/* Import the Poppins font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* Apply a background color to the AnchorPane */
+.anchor-pane {
+    -fx-background-color: #f0f0f0; /* Light grey background */
+}
+
+/* Style the Text elements */
+.text {
+    -fx-fill: #333333; /* Dark grey text color */
+    -fx-font-family: "Poppins", sans-serif; /* Stylish and clean font family */
+}
+
+#titleText, #difficultyText {
+    -fx-font-family: "Poppins", sans-serif; /* Ensure the font family is applied */
+}
+
+#titleText {
+}
+
+#difficultyText {
+}
+
+/* General Button styling */
+.button {
+    -fx-background-color: #4CAF50; /* Default Green background color */
+    -fx-text-fill: white; /* White text color */
+    -fx-font-size: 20px; /* Font size */
+    -fx-font-family: "Poppins", sans-serif; /* Stylish font family */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Rounded corners */
+    -fx-padding: 10px 20px; /* Padding inside the button */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 1); /* Shadow effect */
+    -fx-transition: background-color 0.3s ease, -fx-effect 0.3s ease; /* Smooth transition */
+}
+
+/* Hover effects for Buttons */
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 12, 0.5, 0, 1); /* Stronger shadow */
+}
+
+/* Specific styles for Buttons */
+.button#startGame {
+    -fx-background-color: #4CAF50; /* Green background */
+}
+
+.button#exitGame {
+    -fx-background-color: #f44336; /* Red background */
+}
+
+.button#settings {
+    -fx-background-color: #2196F3; /* Blue background */
+}
+
+.button#pastScores {
+    -fx-background-color: #FFC107; /* Yellow background */
+}
+
+/* Hover effects for specific Buttons */
+.button#startGame:hover {
+    -fx-background-color: #388E3C; /* Darker green for start button hover */
+}
+
+.button#exitGame:hover {
+    -fx-background-color: #c62828; /* Darker red for exit button hover */
+}
+
+.button#settings:hover {
+    -fx-background-color: #0288D1; /* Darker blue for settings button hover */
+}
+
+.button#pastScores:hover {
+    -fx-background-color: #FFB300; /* Darker yellow for past scores button hover */
+}
+
+/* Style the Slider */
+.slider {
+    -fx-background-color: #e0e0e0; /* Light grey background */
+    -fx-border-color: #4CAF50; /* Green border */
+    -fx-border-width: 2px; /* Border width */
+    -fx-padding: 10px; /* Padding around the slider */
+    -fx-pref-width: 800px; /* Width of the slider */
+    -fx-pref-height: 20px; /* Height of the slider */
+    -fx-alignment: center; /* Centering the slider horizontally */
+    -fx-layout-x: 50%; /* Center horizontally */
+    -fx-layout-y: 450px; /* Position vertically, adjust if needed */
+}
+
+/* Slider track and thumb styling */
+.slider .track {
+    -fx-background-color: #c8e6c9; /* Lighter green track */
+}
+
+.slider .thumb {
+    -fx-background-color: #4CAF50; /* Green thumb */
+    -fx-border-color: #388E3C; /* Darker green border for thumb */
+    -fx-border-width: 2px; /* Border width */
+    -fx-shape: "M 0 0 H 30 V 30 H 0 Z"; /* Larger square shape for thumb */
+}
