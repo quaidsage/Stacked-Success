@@ -47,6 +47,16 @@
 
 <Pane fx:id="basePane" onKeyPressed="#onKeyPressed" prefHeight="900.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stackedsuccess.controllers.GameBoardController">
    <children>
+      <Pane fx:id="pauseBackground" onKeyPressed="#onKeyPressed" opacity="0.0" prefHeight="900.0" prefWidth="1350.0" style="-fx-background-color: grey;" />
+      <Pane fx:id="pauseLabelBackground" onKeyPressed="#onKeyPressed" opacity="0.0" prefHeight="900.0" prefWidth="1350.0">
+         <children>
+            <Label fx:id="pauseLabel" alignment="CENTER" layoutX="426.0" layoutY="380.0" prefHeight="141.0" prefWidth="499.0" text="P A U S E D" textFill="#fdfad0">
+               <font>
+                  <Font name="Arial" size="84.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
       <Button fx:id="gameOverRestartButton" disable="true" layoutX="54.0" layoutY="567.0" mnemonicParsing="false" onAction="#onClickRestart" prefHeight="40.0" prefWidth="222.0" style="-fx-background-color: #ffffff;" text="Restart / Main Menu" visible="false">
          <font>
             <Font name="Agency FB" size="17.0" />

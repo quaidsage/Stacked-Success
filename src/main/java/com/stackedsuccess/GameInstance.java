@@ -15,6 +15,7 @@ public class GameInstance {
   private GameControls gameControls;
   private GameBoard gameBoard;
   private int gameDelay;
+
   private boolean isPaused;
 
   private Tetrimino currentTetrimino;
@@ -144,4 +145,9 @@ public class GameInstance {
     this.isGameOver = isGameOver;
     this.isPaused = isGameOver;
   }
+
+  public boolean isPaused() {
+    return isPaused;
+  }
+
 }

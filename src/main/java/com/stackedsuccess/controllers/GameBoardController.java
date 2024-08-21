@@ -1,5 +1,7 @@
 package com.stackedsuccess.controllers;
 
+import com.stackedsuccess.Action;
+import com.stackedsuccess.GameControls;
 import com.stackedsuccess.GameInstance;
 import com.stackedsuccess.Main;
 import com.stackedsuccess.SceneManager;
@@ -20,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -41,6 +44,9 @@ public class GameBoardController {
   @FXML ImageView nextPieceView;
 
   @FXML Button pauseButton;
+  @FXML Pane pauseBackground;
+  @FXML Pane pauseLabelBackground;
+  @FXML Label pauseLabel;
 
   @FXML VBox gameOverBox;
   @FXML Label gameOverLabel;
@@ -126,14 +132,35 @@ public class GameBoardController {
    */
   @FXML
   public void onKeyPressed(KeyEvent event) {
+    if (event.getCode() == KeyCode.ESCAPE) {
+      togglePauseScreen();
+    }
     gameInstance.handleInput(event);
+  }
+
+  private void togglePauseScreen(){
+    if(gameInstance.isPaused()){
+      basePane.requestFocus();
+      pauseBackground.toBack();
+      pauseLabelBackground.toBack();
+      pauseBackground.setOpacity(0);
+      pauseLabelBackground.setOpacity(0);
+    }
+    else{
+      pauseBackground.toFront();
+      pauseLabelBackground.toFront();
+      pauseLabel.setStyle("-fx-text-fill: #fdfad0; -fx-font-size: 85px;");
+      pauseButton.toFront();
+      pauseBackground.setOpacity(0.5);
+      pauseLabelBackground.setOpacity(1);
+    }
   }
 
   /** Pauses the game when the pause button is clicked. */
   @FXML
   public void onClickPauseButton() {
+    togglePauseScreen();
     gameInstance.togglePause();
-    basePane.requestFocus();
   }
 
   @FXML
