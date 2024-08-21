@@ -7,30 +7,47 @@ import java.io.IOException;
 // This class defines the game board and functionality to check board state
 public class GameBoard {
   private static final int DEFAULT_BOARD_WIDTH = 10;
-  private static final int DEFAULT_BOARD_HEIGHT = 20;
+  private static final int DEFAULT_BOARD_HEIGHT = 22;
 
   private final int[][] board;
+  private final int width;
+  private final int height;
+  private long frameCount;
+  private boolean forceUpdate;
+
   private Tetrimino currentTetrimino;
   private Tetrimino nextTetrimino;
   private Tetrimino holdTetrimino;
-  private int frameCount;
+  private boolean holdUsed = false;
+
   private int score = 0;
   private int level = 1;
-  private int line = 0;
-  private int linesCleared = 0;
-  private boolean holdUsed = false;
+  private int totalLinesCleared = 0;
   private int gameSpeed;
 
   private GameBoardController controller;
 
   public GameBoard() {
     board = new int[DEFAULT_BOARD_HEIGHT][DEFAULT_BOARD_WIDTH];
+    this.width = DEFAULT_BOARD_WIDTH;
+    this.height = DEFAULT_BOARD_HEIGHT;
     initializeBoard();
   }
 
   public GameBoard(int width, int height) {
     board = new int[width][height];
+    this.width = width;
+    this.height = height;
     initializeBoard();
+  }
+
+  /** Setup initial tetrimino pieces and board metrics. */
+  private void initializeBoard() {
+    currentTetrimino = TetriminoFactory.createRandomTetrimino();
+    nextTetrimino = TetriminoFactory.createRandomTetrimino();
+
+    frameCount = 0;
+    gameSpeed = 100;
   }
 
   /**
@@ -40,44 +57,30 @@ public class GameBoard {
    */
   public void setController(GameBoardController controller) {
     this.controller = controller;
-  }
-
-  /** Setup initial tetrimino pieces and board metrics. */
-  private void initializeBoard() {
-    currentTetrimino = TetriminoFactory.createRandomTetrimino();
-    nextTetrimino = TetriminoFactory.createRandomTetrimino();
-    frameCount = 0;
-    gameSpeed = 100;
+    currentTetrimino.updateGhostPosition(this);
   }
 
   /**
-   * Update the state of the board.
+   * Get the current score.
    *
-   * @throws IOException
+   * @return the current score
    */
+  public GameBoardController getController() {
+    return controller;
+  }
+
+  /** Update the state of the board. */
   public void update() throws IOException {
-    controller.setNextPieceView(nextTetrimino);
     frameCount++;
     // Stagger automatic tetrimino movement based on frame count
-    if (frameCount % gameSpeed == 0) {
-      if (!checkCollision(currentTetrimino.getXPos(), currentTetrimino.getYPos() + 1)) {
+    if (frameCount % gameSpeed == 0 || forceUpdate) {
+      forceUpdate = false;
+      if (currentTetrimino.canMoveDown(this)) {
         currentTetrimino.updateTetrimino(this, Action.MOVE_DOWN);
       } else {
-        placeTetrimino(currentTetrimino);
-        clearFullRows();
-        currentTetrimino = nextTetrimino;
-        nextTetrimino = TetriminoFactory.createRandomTetrimino();
+        handleTetriminoPlacement();
       }
     }
-  }
-
-  /**
-   * Get-type function.
-   *
-   * @return the current tetrimino for game board
-   */
-  public Tetrimino getCurrentTetrimino() {
-    return currentTetrimino;
   }
 
   /**
@@ -110,13 +113,78 @@ public class GameBoard {
   }
 
   /**
+   * Check to see whether the default tetrimino spawn location is occupied.
+   *
+   * @return if the spawn location is occupied
+   */
+  public boolean isSpawnLocationOccupied() {
+    return checkCollision(Tetrimino.DEFAULT_SPAWN_X, Tetrimino.DEFAULT_SPAWN_Y);
+  }
+
+  /**
+   * Forces the game loop to update once, primarily used to place
+   * tetrimino pieces instantly.
+   */
+  public void forceUpdate() {
+    forceUpdate = true;
+  }
+
+  /**
+   * Get-type function.
+   *
+   * @return the current tetrimino for game board
+   */
+  public Tetrimino getCurrentTetrimino() {
+    return currentTetrimino;
+  }
+
+  /**
+   * Get the height of the board.
+   *
+   * @return the current height
+   */
+  public int getHeight() {
+    return height;
+  }
+
+  /**
+   * Get the width of the board.
+   *
+   * @return the current width
+   */
+  public int getWidth() {
+    return width;
+  }
+
+  /** Handle the placement of the current tetrimino piece in its current position. */
+  private void handleTetriminoPlacement() throws IOException {
+    holdUsed = false;
+
+    placeTetrimino(currentTetrimino);
+    if (checkGameOver()) return;
+
+    controller.updateDisplayGrid(currentTetrimino);
+
+    clearFullRows();
+
+    currentTetrimino = nextTetrimino;
+    nextTetrimino = TetriminoFactory.createRandomTetrimino();
+
+    // If spawn location is occupied, move tetrimino visually outside of board
+    // If the tetrimino is placed visually outside the board, the game will end.
+    if (isSpawnLocationOccupied()) currentTetrimino.setYPos(0);
+
+    controller.setNextPieceView(nextTetrimino);
+    currentTetrimino.updateGhostPosition(this);
+}
+
+  /**
    * Appends new tetrimino to the game board.
    *
    * @param tetrimino the tetrimino to place on the game board.
-   * @throws IOException
+   * @throws IOException by given tetrimino
    */
   private void placeTetrimino(Tetrimino tetrimino) throws IOException {
-    holdUsed = false;
     int[][] layout = tetrimino.getTetriminoLayout();
     for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
       for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
@@ -124,61 +192,48 @@ public class GameBoard {
 
           int spawnX = tetrimino.getXPos() + layoutX;
           int spawnY = tetrimino.getYPos() + layoutY;
-          // Check for collision at the spawn location
-          if (isCellOccupied(spawnX, spawnY)) {
-            controller.gameOver();
-            return;
-          }
 
           board[spawnY][spawnX] = layout[layoutY][layoutX];
         }
       }
     }
-    if (controller != null) {
-      controller.updateDisplayGrid(tetrimino);
+  }
+
+  /** Check top two rows of the board for pieces visually out of bounds. */
+  private boolean checkGameOver() throws IOException {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y <= 1; y++) {
+        if (board[y][x] != 0) {
+          controller.gameOver();
+          return true;
+        }
+      }
     }
+    return false;
   }
 
   /** Clears full rows and moves rows above downwards. */
   private void clearFullRows() {
-    int fullRows = 0;
+    int newLinesCleared = 0;
     for (int y = 0; y < board.length; y++) {
       if (isRowFull(y, board[y])) {
-        fullRows++;
+        newLinesCleared++;
         shiftRowsDown(y);
-        if (controller != null) {
-          controller.clearLine(y);
-        }
+        controller.clearLine(y);
       }
     }
-    linesCleared += fullRows;
-    updateLines(fullRows);
+    calculateScore(newLinesCleared);
+    totalLinesCleared += newLinesCleared;
+
+    controller.updateLine(totalLinesCleared);
     updateLevel();
     changeGameSpeed();
-    calculateScore(fullRows);
   }
 
-  /**
-   * Updates the line count based on the number of lines cleared.
-   *
-   * @param line the number of lines cleared
-   */
-  private void updateLines(int fullRows) {
-    line += fullRows;
-    controller.updateLine(line);
-  }
-
-  /**
-   * Updates the level based on the number of lines cleared.
-   *
-   * @param linesCleared the number of lines cleared
-   */
+  /** Updates the level based on the number of lines cleared. */
   private void updateLevel() {
-    if (linesCleared >= 10) {
-      linesCleared -= 10;
-      level++;
-      controller.updateLevel(level);
-    }
+    level = (int) (totalLinesCleared / 10) + 1;
+    controller.updateLevel(level);
   }
 
   /**
@@ -190,23 +245,20 @@ public class GameBoard {
     switch (linesCleared) {
       case 1:
         score += 40;
-        controller.updateScore(score);
         break;
       case 2:
         score += 100;
-        controller.updateScore(score);
         break;
       case 3:
         score += 300;
-        controller.updateScore(score);
         break;
       case 4:
         score += 1200;
-        controller.updateScore(score);
         break;
       default:
         break;
     }
+    controller.updateScore(score);
   }
 
   /**
@@ -263,7 +315,7 @@ public class GameBoard {
    * holding if they are already used it
    */
   public void holdTetrimino() {
-    if (holdUsed || currentTetrimino.getHasHardDropped()) return;
+    if (holdUsed) return;
 
     if (holdTetrimino == null) {
       holdTetrimino = currentTetrimino;
@@ -273,16 +325,13 @@ public class GameBoard {
       Tetrimino temp = holdTetrimino;
       holdTetrimino = currentTetrimino;
       currentTetrimino = temp;
-
-      currentTetrimino.setXPos(board[0].length / 2 - currentTetrimino.getWidth() / 2);
-      currentTetrimino.setYPos(0);
+      currentTetrimino.resetPosition();
     }
+
+    controller.setHoldPieceView(holdTetrimino);
+    controller.setNextPieceView(nextTetrimino);
 
     holdUsed = true;
-    if (controller != null) {
-      controller.setHoldPieceView(holdTetrimino);
-      controller.setNextPieceView(nextTetrimino);
-    }
   }
 
   /**
@@ -303,30 +352,5 @@ public class GameBoard {
 
   }
 
-  /**
-   * Get the current score.
-   *
-   * @return the current score
-   */
-  public GameBoardController getController() {
-    return controller;
-  }
 
-  /**
-   * Get the height of the board.
-   *
-   * @return the current height
-   */
-  public int getHeight() {
-    return DEFAULT_BOARD_HEIGHT;
-  }
-
-  /**
-   * Get the width of the board.
-   *
-   * @return the current width
-   */
-  public int getWidth() {
-    return DEFAULT_BOARD_WIDTH;
-  }
 }

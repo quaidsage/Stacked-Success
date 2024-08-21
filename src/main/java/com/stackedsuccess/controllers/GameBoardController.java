@@ -95,6 +95,8 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   private void renderTetrimino(Tetrimino tetrimino) {
+    if (gameInstance.isGameOver()) return;
+
     gameGrid.getChildren().clear(); // Clear previous tetrimino
     gameGrid.gridLinesVisibleProperty().setValue(true);
 
@@ -117,6 +119,8 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   public void updateDisplayGrid(Tetrimino tetrimino) {
+    if (gameInstance.isGameOver()) return;
+
     Platform.runLater(
         () -> {
           int[][] layout = tetrimino.getTetriminoLayout();
@@ -140,6 +144,8 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   public void clearLine(int lineIndex) {
+    if (gameInstance.isGameOver()) return;
+
     Platform.runLater(
         () -> {
           displayGrid
@@ -174,11 +180,6 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
           displayGrid.getChildren().removeAll(previousGhostTetrominos);
           previousGhostTetrominos.clear();
 
-          // Check for overlap
-          if (isOverlapping(tetrimino, ghostY)) {
-            return; // Do not display ghost block if overlapping
-          }
-
           int[][] layout = tetrimino.getTetriminoLayout();
           for (int row = 0; row < layout.length; row++) {
             for (int col = 0; col < layout[row].length; col++) {
@@ -191,29 +192,6 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
             }
           }
         });
-  }
-
-  /**
-   * Checks if the tetrimino is overlapping with the ghost block.
-   *
-   * @param tetrimino the tetrimino to be checked for overlap
-   * @param ghostY the y position of the ghost block
-   * @return true if the tetrimino is overlapping with the ghost block, false otherwise
-   */
-  @FXML
-  private boolean isOverlapping(Tetrimino tetrimino, int ghostY) {
-    int[][] layout = tetrimino.getTetriminoLayout();
-    for (int row = 0; row < layout.length; row++) {
-      for (int col = 0; col < layout[row].length; col++) {
-        if (layout[row][col] != 0) {
-          int blockY = tetrimino.getYPos() + row;
-          if (blockY == ghostY + row) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
   }
 
   /**
@@ -338,10 +316,7 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
     allTetriminoStyles.put("ZShape", "#04b4ec");
   }
 
-  /**
-   * Method for plaing game over animation
-   * 
-   */
+  /** Method for playing game over animation. */
   public void playGameOverAnimation() {
     int rows = displayGrid.getRowCount();
     int cols = displayGrid.getColumnCount();
@@ -407,11 +382,15 @@ public class GameBoardController implements GameInstance.TetriminoUpdateListener
    */
   @FXML
   public void gameOver() throws IOException {
+    gameInstance.setGameOver(true);
+
     // Save if score is a high score
     if (ScoreRecorder.isHighScore(scoreLabel.getText())) {
       ScoreRecorder.saveScore(scoreLabel.getText());
     }
-    gameInstance.togglePause();
+
+    Platform.runLater(() -> gameGrid.getChildren().clear());
+
     playGameOverAnimation();
     
 
