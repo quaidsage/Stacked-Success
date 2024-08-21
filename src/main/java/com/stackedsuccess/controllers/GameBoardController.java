@@ -1,6 +1,9 @@
 package com.stackedsuccess.controllers;
 
 import com.stackedsuccess.GameInstance;
+import com.stackedsuccess.Main;
+import com.stackedsuccess.SceneManager;
+import com.stackedsuccess.SceneManager.AppUI;
 import com.stackedsuccess.ScoreRecorder;
 import com.stackedsuccess.tetriminos.*;
 import java.io.IOException;
@@ -10,6 +13,8 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
@@ -68,6 +73,11 @@ public class GameBoardController {
         () -> {
           gameInstance.start();
           gameInstance.getGameBoard().setController(this);
+          nextPieceView.setImage(
+              new Image(
+                  "/images/"
+                      + gameInstance.getGameBoard().getNextTetrimino().getClass().getSimpleName()
+                      + ".png"));
           setWindowCloseHandler(getStage());
         });
   }
@@ -104,11 +114,7 @@ public class GameBoardController {
   @FXML
   public void gameOver() throws IOException {
     gameInstance.setGameOver(true);
-
-    // Save if score is a high score
-    if (ScoreRecorder.isHighScore(scoreLabel.getText())) {
-      ScoreRecorder.saveScore(scoreLabel.getText());
-    }
+    ScoreRecorder.saveScore(scoreLabel.getText());
 
     playGameOverAnimation();
   }
@@ -136,8 +142,9 @@ public class GameBoardController {
   }
 
   @FXML
-  void onClickRestart(ActionEvent event) {
-    // will add functionality once main menu is made
+  void onClickRestart(ActionEvent event) throws IOException {
+    SceneManager.addScene(AppUI.MAIN_MENU, loadFxml("HomeScreen"));
+    Main.setUi(AppUI.MAIN_MENU);
   }
 
   /**
@@ -396,5 +403,16 @@ public class GameBoardController {
    */
   private Stage getStage() {
     return (Stage) basePane.getScene().getWindow();
+  }
+
+  /**
+   * Loads the FXML file and returns the parent node.
+   *
+   * @param fxml the name of the FXML file (without extension)
+   * @return the parent node of the input file
+   * @throws IOException if the file is not found
+   */
+  public static Parent loadFxml(final String fxml) throws IOException {
+    return new FXMLLoader(Main.class.getResource("/fxml/" + fxml + ".fxml")).load();
   }
 }

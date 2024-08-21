@@ -61,18 +61,14 @@ public class HomeScreenController {
 
   @FXML
   public void startGame() throws IOException {
-      int initialLevel = (int) difficultySlider.getValue(); // Get the level from the slider
-      FXMLLoader loader = new FXMLLoader(Main.class.getResource("/fxml/GameBoard.fxml"));
-      Parent root = loader.load();
-      GameBoardController controller = loader.getController();
-      controller.updateLevel(initialLevel); // Set the initial level
-      SceneManager.addScene(AppUI.GAME, root);
-      Main.setUi(AppUI.GAME);
+    int initialLevel = (int) difficultySlider.getValue(); // Get the level from the slider
+    FXMLLoader loader = new FXMLLoader(Main.class.getResource("/fxml/GameBoard.fxml"));
+    Parent root = loader.load();
+    GameBoardController controller = loader.getController();
+    controller.updateLevel(initialLevel); // Set the initial level
+    SceneManager.addScene(AppUI.GAME, root);
+    Main.setUi(AppUI.GAME);
   }
-
-    public static Parent loadFxml(final String fxml) throws IOException {
-        return new FXMLLoader(Main.class.getResource("/fxml/" + fxml + ".fxml")).load();
-    }
 
     public void onKeyPressed(KeyEvent event) {
         difficultySlider.requestFocus();

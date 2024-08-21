@@ -343,4 +343,13 @@ public class GameBoard {
       gameSpeed = 3;
     }
   }
+
+  /**
+   * Get the next tetrimino piece.
+   *
+   * @return the next tetrimino piece
+   */
+  public Tetrimino getNextTetrimino() {
+    return nextTetrimino;
+  }
 }
