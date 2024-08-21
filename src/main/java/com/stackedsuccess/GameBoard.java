@@ -161,11 +161,11 @@ public class GameBoard {
     holdUsed = false;
 
     placeTetrimino(currentTetrimino);
+    if (checkGameOver()) return;
 
     controller.updateDisplayGrid(currentTetrimino);
 
     clearFullRows();
-    checkGameOver();
 
     currentTetrimino = nextTetrimino;
     nextTetrimino = TetriminoFactory.createRandomTetrimino();
@@ -200,14 +200,16 @@ public class GameBoard {
   }
 
   /** Check top two rows of the board for pieces visually out of bounds. */
-  private void checkGameOver() throws IOException {
+  private boolean checkGameOver() throws IOException {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y <= 1; y++) {
         if (board[y][x] != 0) {
           controller.gameOver();
+          return true;
         }
       }
     }
+    return false;
   }
 
   /** Clears full rows and moves rows above downwards. */
