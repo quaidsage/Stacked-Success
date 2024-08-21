@@ -83,7 +83,7 @@ public class HomeScreenController {
                 // Do nothing for now
             }
         }
-        }
+    }
 
     @FXML
     public void showPastScores() {
