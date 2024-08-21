@@ -53,7 +53,7 @@ public abstract class Tetrimino {
   /** Resets the tetrimino piece to default position. */
   public void resetPosition() {
     xPos = Tetrimino.DEFAULT_SPAWN_X;
-    yPos = Tetrimino.DEFAULT_SPAWN_Y;
+    yPos = (width == 3) ? Tetrimino.DEFAULT_SPAWN_Y : Tetrimino.DEFAULT_SPAWN_Y - 1;
   }
 
   /**

@@ -2,8 +2,7 @@ package com.stackedsuccess.tetriminos;
 
 public class ZShape extends Tetrimino {
   public ZShape() {
-    layout =
-        new int[][] {
+    layout = new int[][] {
           {1, 1, 0},
           {0, 1, 1},
           {0, 0, 0}

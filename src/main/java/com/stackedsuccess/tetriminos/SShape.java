@@ -2,8 +2,7 @@ package com.stackedsuccess.tetriminos;
 
 public class SShape extends Tetrimino {
   public SShape() {
-    layout =
-        new int[][] {
+    layout = new int[][] {
           {0, 1, 1},
           {1, 1, 0},
           {0, 0, 0}
