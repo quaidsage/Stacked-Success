@@ -125,7 +125,7 @@ public class GameBoard {
 
   public void setBaseLevel(int baseLevel) {
     this.baseLevel = baseLevel;
-    controller.updateLevel(baseLevel);
+    updateLevel();
   }
 
   /** Forces the game loop to update once, primarily used to place tetrimino pieces instantly. */
