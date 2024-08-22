@@ -107,16 +107,7 @@ public abstract class Tetrimino {
 
   /** Rotate tetrimino layout clockwise. */
   private void rotateClockwise(GameBoard gameBoard) {
-    int[][] rotatedLayout = getRotatedLayout();
-    int[] adjustedPosition = adjustPositionForBounds(rotatedLayout, gameBoard);
-    int newX = adjustedPosition[0];
-    int newY = adjustedPosition[1];
-
-    if (!hasCollisions(rotatedLayout, newX, newY, gameBoard)) {
-      xPos = newX;
-      yPos = newY;
-      layout = rotatedLayout;
-    }
+    for (int i = 0; i < 3; i++) rotateCounterClockwise(gameBoard);
   }
 
   /** Rotate tetrimino layout counter-clockwise. */
@@ -180,7 +171,16 @@ public abstract class Tetrimino {
 
   /** Rotate tetrimino layout counter-clockwise. */
   private void rotateCounterClockwise(GameBoard gameBoard) {
-    for (int i = 0; i < 3; i++) rotateClockwise(gameBoard);
+    int[][] rotatedLayout = getRotatedLayout();
+    int[] adjustedPosition = adjustPositionForBounds(rotatedLayout, gameBoard);
+    int newX = adjustedPosition[0];
+    int newY = adjustedPosition[1];
+
+    if (!hasCollisions(rotatedLayout, newX, newY, gameBoard)) {
+      xPos = newX;
+      yPos = newY;
+      layout = rotatedLayout;
+    }
   }
 
   /**
