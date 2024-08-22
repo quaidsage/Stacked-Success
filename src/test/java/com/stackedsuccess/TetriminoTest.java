@@ -48,7 +48,7 @@ class TetriminoTest {
   }
 
   @Test
-  void testTetriminoPause() {
+  void testTetriminoHardDrop() {
     Tetrimino t = gameBoard.getCurrentTetrimino();
     int before = t.getYPos();
     t.updateTetrimino(gameBoard, Action.HARD_DROP);
