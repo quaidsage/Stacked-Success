@@ -81,7 +81,13 @@ public class ScoreRecorder {
     }
   }
 
-  /** Create a score file if it does not exist. */
+  /**
+   * Creates a score file if it does not already exist.
+   *
+   * <p>This method checks if the score file exists. If the file does not exist, it attempts to create a new one.
+   * If the file creation fails on the first attempt, the method retries. If the file creation fails again, an
+   * IOException is thrown to indicate that the score file could not be created</p>
+   */
   public static void createScoreFile() {
     File scoreFile = new File(SCOREFILE);
     if (!scoreFile.exists()) {

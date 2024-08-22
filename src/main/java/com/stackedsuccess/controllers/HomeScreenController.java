@@ -23,24 +23,32 @@ public class HomeScreenController {
   @FXML private Button pastScoresButton;
   @FXML private ListView<String> pastScores;
 
-  // TODO: JAVADOCS
+  /**
+   * Initialises the Home Screen controller by setting up the home screen.
+   *
+   * <p>This method sets the initial focus on the difficulty slider (1) and loads past scores
+   * from a file into the list view component that displays previous game scores if the players
+   * clicks on the past scores button</p>
+   */
   @FXML
   public void initialize() {
     difficultySlider.requestFocus();
     List<String> scores = loadScoresFromFile("score.txt");
     pastScores.getItems().addAll(scores);
+    pastScoresButton.setFocusTraversable(false);
   }
 
   /**
    * Reads scores from a file and returns them as a list of strings.
    *
-   * @param filePath the path to the score file
-   * @return list of scores as strings
+   * @param filePath The path to the score file that will be read.
+   * @return A list of scores as strings, where each string represents one line from the file.
    */
   private List<String> loadScoresFromFile(String filePath) {
     List<String> scores = new ArrayList<>();
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
       String line;
+      //reads each line from the file and adds to the score list
       while ((line = reader.readLine()) != null) {
         scores.add(line);
       }
@@ -50,24 +58,50 @@ public class HomeScreenController {
     return scores;
   }
 
-  /** Handles exiting of window on game exit. */
+  /**
+   * Closes the game when the close button is clicked
+   *
+   * <p>This method is linked to the close button. When the
+   * button is clicked, the application will terminate</p>
+   */
   public void exitGame() {
     System.exit(0);
   }
 
-  // TODO: JAVADOCS
+  /**
+   * Starts a new game by loading the game board UI and initialising the game at the selected difficulty level.
+   *
+   * <p>This method retrieves the initial difficulty level from the slider of 1-20, loads the game board
+   * from the corresponding FXML file, and updates the game board controller with the selected level.
+   * It then switches the UI to the game screen.</p>
+   *
+   * @throws IOException If there is an issue loading the FXML file for the game board.
+   */
   @FXML
   public void startGame() throws IOException {
-    int initialLevel = (int) difficultySlider.getValue(); // Get the level from the slider
+    // Get the level from the slider
+    int initialLevel = (int) difficultySlider.getValue();
+
+    // loads the game board fxml file
     FXMLLoader loader = new FXMLLoader(Main.class.getResource("/fxml/GameBoard.fxml"));
     Parent root = loader.load();
     GameBoardController controller = loader.getController();
-    controller.setBaseLevel(initialLevel);
+
+    // Set the initial level
+    controller.updateLevel(initialLevel);
     SceneManager.addScene(AppUI.GAME, root);
     Main.setUi(AppUI.GAME);
   }
 
-  // TODO: JAVADOCS
+  /**
+   * Handles key press events, focusing the difficulty slider and starting the game if the spacebar is pressed.
+   *
+   * <p>This method is triggered whenever a key is pressed. It first sets the focus to the difficulty slider.
+   * If the spacebar is pressed, it attempts to start the game</p>
+   *
+   * @param event The key event triggered by the key press.
+   */
+  @FXML
   public void onKeyPressed(KeyEvent event) {
     difficultySlider.requestFocus();
     if (event.getCode() == KeyCode.SPACE) {
@@ -79,7 +113,12 @@ public class HomeScreenController {
     }
   }
 
-  // TODO: JAVADOCS
+  /**
+   * Shows the players past scores in a list view
+   *
+   * <p>When the button is pressed, a list of the players previous scores that are saved are shown so that
+   * the player can check their high scores in the game</p>
+   */
   @FXML
   public void showPastScores() {
     if (pastScores.isVisible()) {

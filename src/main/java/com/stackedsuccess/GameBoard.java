@@ -28,21 +28,27 @@ public class GameBoard {
 
   private GameBoardController controller;
 
+  /**
+   * Initialises a new instance of the Game Board class with the default board dimensions.
+   *
+   * <p>This constructor sets up the game board by creating a 2D array with the default width and height.
+   * It then calls the initializeBoard() method to prepare the board for gameplay.</p>
+   */
   public GameBoard() {
+    //creates the boards default dimensions
     board = new int[DEFAULT_BOARD_HEIGHT][DEFAULT_BOARD_WIDTH];
     this.width = DEFAULT_BOARD_WIDTH;
     this.height = DEFAULT_BOARD_HEIGHT;
     initializeBoard();
   }
 
-  public GameBoard(int width, int height) {
-    board = new int[width][height];
-    this.width = width;
-    this.height = height;
-    initializeBoard();
-  }
-
-  /** Setup initial tetrimino pieces and board metrics. */
+  /**
+   * Sets up the initial Tetrimino pieces and initialises board-related metrics.
+   *
+   * <p>This method is responsible for creating the current and next Tetrimino pieces
+   * using the Tetrimino factory. It also initialises the frame count and
+   * game speed to their starting values.</p>
+   */
   private void initializeBoard() {
     currentTetrimino = TetriminoFactory.createRandomTetrimino();
     nextTetrimino = TetriminoFactory.createRandomTetrimino();
@@ -69,12 +75,19 @@ public class GameBoard {
     return controller;
   }
 
-  /** Update the state of the board. */
+  /**
+   * Updates the state of the game board. This method is called once per frame.
+   * It handles the timing of tetrimino movement and updates the display.
+   *
+   * @throws IOException if an error occurs during display update
+   */
   public void update() throws IOException {
     frameCount++;
     controller.updateDisplay(board);
 
     // Stagger automatic tetrimino movement based on frame count
+    // Moves the tetrimino down if the framecount is a multiple of the gamespeed
+    // Or if the forceUpdate (such as hard drop) is true
     if (frameCount % gameSpeed == 0 || forceUpdate) {
       forceUpdate = false;
       if (currentTetrimino.canMoveDown(this)) {
@@ -180,26 +193,34 @@ public class GameBoard {
   }
 
   /**
-   * Appends new tetrimino to the game board.
+   * Appends a new tetrimino to the game board at its current position.
+   * This method places the blocks of the tetrimino onto the game board.
    *
-   * @param tetrimino the tetrimino to place on the game board.
+   * @param tetrimino the tetrimino to place on the game board
    */
   private void placeTetrimino(Tetrimino tetrimino) {
     int[][] layout = tetrimino.getTetriminoLayout();
     for (int layoutY = 0; layoutY < tetrimino.getHeight(); layoutY++) {
       for (int layoutX = 0; layoutX < tetrimino.getWidth(); layoutX++) {
+        // checks if the current pos is occupied
         if (layout[layoutY][layoutX] != 0) {
-
+          // then calculates the position on the board where it will be placed
           int spawnX = tetrimino.getXPos() + layoutX;
           int spawnY = tetrimino.getYPos() + layoutY;
-
+          // then places the piece at the calculated position
           board[spawnY][spawnX] = layout[layoutY][layoutX];
         }
       }
     }
   }
 
-  /** Check top two rows of the board for pieces visually out of bounds. */
+  /**
+   * Checks the top two rows of the game board to determine if any pieces are
+   * out of bounds, indicating a game-over condition.
+   *
+   * @return true if the game is over due to pieces in the top rows, false otherwise
+   * @throws IOException if an error occurs while handling the game over condition
+   */
   private boolean checkGameOver() throws IOException {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y <= 1; y++) {
@@ -212,11 +233,18 @@ public class GameBoard {
     return false;
   }
 
-  /** Clears full rows and moves rows above downwards. */
+  /**
+   * Method to clear any full rows on the board
+   *
+   * <p>Clears full rows on the game board and shifts the rows above downward.
+   * It also updates the score, the total number of cleared lines, and adjusts
+   * the game level and speed accordingly.</p>
+   */
   private void clearFullRows() {
     int newLinesCleared = 0;
     for (int y = 0; y < board.length; y++) {
       if (isRowFull(y, board[y])) {
+        //moves all the rows that are above, down one
         newLinesCleared++;
         shiftRowsDown(y);
       }
@@ -229,7 +257,11 @@ public class GameBoard {
     changeGameSpeed();
   }
 
-  /** Updates the level based on the number of lines cleared. */
+  /** Updates the level based on the number of lines cleared.
+   *
+   * <p>For every 10 lines that are cleared, the game will increase
+   * by one level</p>
+   */
   private void updateLevel() {
     level = (totalLinesCleared / 10) + baseLevel;
     controller.updateLevel(level);
@@ -243,6 +275,7 @@ public class GameBoard {
    */
   private void calculateScore(int linesCleared) {
     switch (linesCleared) {
+      // the different calculations of scores, whether 1,2,3, or 4 lines are cleared at once
       case 1:
         score += 40;
         break;
@@ -311,17 +344,20 @@ public class GameBoard {
   }
 
   /**
-   * Hold the current tetrimino and swap with the hold tetrimino if available. Block the user from
-   * holding if they are already used it
+   * Holds the current tetrimino and swaps it with the held tetrimino if one is already held.
+   * The user is blocked from holding another tetrimino until the current one is placed.
    */
   public void holdTetrimino() {
+    // check if a player is already holding a piece
     if (holdUsed) return;
 
+    // if there is no tetrimino being currently held, store the current one
     if (holdTetrimino == null) {
       holdTetrimino = currentTetrimino;
       currentTetrimino = nextTetrimino;
       nextTetrimino = TetriminoFactory.createRandomTetrimino();
     } else {
+      //if a tetriminio is already being held swap the current with the held
       Tetrimino temp = holdTetrimino;
       holdTetrimino = currentTetrimino;
       currentTetrimino = temp;
@@ -335,8 +371,10 @@ public class GameBoard {
   }
 
   /**
-   * Varies game speed based on level. Levels are easier up to 10, with difficulty jump at 10, and
-   * 15, and kill screen at level 20
+   * Adjusts the game speed based on the current level. The game speed decreases (game gets faster) as
+   * the player progresses through the levels, with noticeable difficulty jumps at levels 10 and 15.
+   * At level 20, the game reaches a "kill screen" speed where it becomes extremely difficult to continue.
+   * Essentially creating a hard cap to the game.
    */
   private void changeGameSpeed() {
 
