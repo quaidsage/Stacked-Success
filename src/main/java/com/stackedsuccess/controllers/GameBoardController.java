@@ -138,6 +138,7 @@ public class GameBoardController {
     gameInstance.handleInput(event);
   }
 
+  // TODO: JAVADOCS
   private void togglePauseScreen(){
     if(gameInstance.isPaused()){
       basePane.requestFocus();
@@ -163,11 +164,13 @@ public class GameBoardController {
     gameInstance.togglePause();
   }
 
+  // TODO: JAVADOCS
   @FXML
   void onClickExit(ActionEvent event) {
     System.exit(0);
   }
 
+  // TODO: JAVADOCS
   @FXML
   void onClickRestart(ActionEvent event) throws IOException {
     SceneManager.addScene(AppUI.MAIN_MENU, loadFxml("HomeScreen"));
@@ -201,6 +204,7 @@ public class GameBoardController {
     Platform.runLater(() -> levelLabel.setText(String.valueOf(level)));
   }
 
+  public void setBaseLevel(int baseLevel) { Platform.runLater(() -> gameInstance.getGameBoard().setBaseLevel(baseLevel));}
   /**
    * Sets the view of the next tetromino to be loaded.
    *
