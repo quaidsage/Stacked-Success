@@ -23,6 +23,7 @@ public class HomeScreenController {
   @FXML private Button pastScoresButton;
   @FXML private ListView<String> pastScores;
 
+  // TODO: JAVADOCS
   @FXML
   public void initialize() {
     difficultySlider.requestFocus();
@@ -49,21 +50,24 @@ public class HomeScreenController {
     return scores;
   }
 
+  /** Handles exiting of window on game exit. */
   public void exitGame() {
     System.exit(0);
   }
 
+  // TODO: JAVADOCS
   @FXML
   public void startGame() throws IOException {
     int initialLevel = (int) difficultySlider.getValue(); // Get the level from the slider
     FXMLLoader loader = new FXMLLoader(Main.class.getResource("/fxml/GameBoard.fxml"));
     Parent root = loader.load();
     GameBoardController controller = loader.getController();
-    controller.updateLevel(initialLevel); // Set the initial level
+    controller.setBaseLevel(initialLevel);
     SceneManager.addScene(AppUI.GAME, root);
     Main.setUi(AppUI.GAME);
   }
 
+  // TODO: JAVADOCS
   public void onKeyPressed(KeyEvent event) {
     difficultySlider.requestFocus();
     if (event.getCode() == KeyCode.SPACE) {
@@ -75,6 +79,7 @@ public class HomeScreenController {
     }
   }
 
+  // TODO: JAVADOCS
   @FXML
   public void showPastScores() {
     if (pastScores.isVisible()) {
