@@ -21,6 +21,12 @@ public class GameInstance {
   private Tetrimino currentTetrimino;
   private TetriminoUpdateListener tetriminoUpdateListener;
 
+  /**
+   * Constructs a new instance of the game with default initial settings.
+   *
+   * <p>This constructor initialises the game state by setting the initial score,
+   * game delay, and flags for pause and game over status</p>
+   */
   public GameInstance() {
     score = 0;
     gameDelay = 10;
@@ -28,21 +34,42 @@ public class GameInstance {
     isGameOver = false;
   }
 
+  /**
+   * An interface for listening to updates of a Tetrimino.
+   */
   public interface TetriminoUpdateListener {
     void onTetriminoUpdate(Tetrimino tetrimino);
   }
 
+  /**
+   * Sets the listener for Tetrimino updates
+   *
+   * @param listener The TetriminoUpdateListener to be notified of updates.
+   */
   public void setTetriminoUpdateListener(TetriminoUpdateListener listener) {
     this.tetriminoUpdateListener = listener;
   }
 
+  /**
+   * Notifies the registered listener that the current Tetrimino has been updated
+   *
+   * <p>This method is called whenever the Tetrimino's state changes. It checks if a
+   * listener has been registered, and if so, it triggers the listener's
+   * onTetriminoUpdate() method, passing the updated Tetrimino as an argument.</p>
+   */
   private void notifyTetriminoUpdate() {
     if (tetriminoUpdateListener != null) {
       tetriminoUpdateListener.onTetriminoUpdate(currentTetrimino);
     }
   }
 
-  /** Starts the game instance to periodically update the game board and handle game movement. */
+  /**
+   * Starts the game instance to periodically update the game board and handle game movement.
+   *
+   * <p>This method initialises the game board, retrieves the current Tetrimino, and sets up the
+   * game controls. It also creates a timer that periodically triggers the game loop, which updates
+   * the game state, handles Tetrimino movements, and checks whether the game is paused or over.</p>
+   */
   public void start() {
     gameBoard = new GameBoard();
     currentTetrimino = gameBoard.getCurrentTetrimino();
@@ -146,6 +173,11 @@ public class GameInstance {
     this.isPaused = isGameOver;
   }
 
+  /**
+   * This method checks whether the game is currently paused
+   *
+   * @return if the game is currently paused
+   */
   public boolean isPaused() {
     return isPaused;
   }

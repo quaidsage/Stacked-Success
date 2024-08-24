@@ -14,8 +14,14 @@ public class GameControls {
     initializeControls();
   }
 
-  /** Bind default controls to actions. */
-  private void initializeControls() {
+  /**
+   * Initialises the default key bindings for various actions in the game.
+   *
+   * <p>This method assigns specific keys to actions such as moving left, right,
+   * down, performing a hard drop, rotating pieces, pausing the game, and holding
+   * a piece</p>
+   */
+   private void initializeControls() {
     controls.put(Action.MOVE_LEFT, KeyCode.LEFT);
     controls.put(Action.MOVE_RIGHT, KeyCode.RIGHT);
     controls.put(Action.MOVE_DOWN, KeyCode.DOWN);

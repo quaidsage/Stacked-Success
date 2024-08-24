@@ -65,13 +65,19 @@ public class GameBoardController {
   private final GameInstance gameInstance = new GameInstance();
 
   /**
-   * Initialises the game board controller, setting up the game grid and starting the game instance.
+   * Initialises the game board controller by setting up the game grid and starting the game instance.
    *
-   * <p>Set everything to default, and start the game instance while also setting listeners for
-   * tetrimino updates and setting the game board controller to the current instance.
+   * <p>This method resets the labels to their default state and requests focus on the base pane.
+   * It then starts the game instance, assigns the current controller to the game board, and updates
+   * the next piece view with the corresponding image of the upcoming Tetrimino. Additionally, it sets
+   * a window close handler for the stage to manage the application closure.
+   *
+   * <p>This method is annotated with `@FXML` to indicate that it is called during the loading of the
+   * FXML file, and it runs initialisation tasks after the FXML components have been loaded.
    */
   @FXML
   public void initialize() {
+    //resets score, line, and level to initial state
     resetLabels();
     basePane.requestFocus();
 
@@ -79,6 +85,7 @@ public class GameBoardController {
         () -> {
           gameInstance.start();
           gameInstance.getGameBoard().setController(this);
+          //updates the image of the next piece
           nextPieceView.setImage(
               new Image(
                   "/images/"
@@ -89,10 +96,16 @@ public class GameBoardController {
   }
 
   /**
-   * Updates the visual display of the game board and actively moving tetrimino pieces.
+   * Updates the visual display of the game board and the currently moving Tetrimino pieces.
    *
-   * @param board the game board to visualise
+   * <p>This method receives the current state of the game board and updates the display to reflect
+   * the position of both stationary and moving pieces. It processes the board to include moving pieces
+   * and then updates the visual grid (the game board)
+   *
+   * @param board the current state of the game board to visualise, where each cell contains a value
+   *              representing the type of block or an empty space
    */
+
   @FXML
   public void updateDisplay(int[][] board) {
     int[][] updatedBoard = addMovingPieces(board);
@@ -100,6 +113,8 @@ public class GameBoardController {
     Platform.runLater(
         () -> {
           displayGrid.getChildren().clear();
+
+          //iterates through every cell in the grid of the game board to update where the pieces move
           for (int y = 0; y < displayGrid.getRowCount(); y++) {
             for (int x = 0; x < displayGrid.getColumnCount(); x++) {
               int blockValue = updatedBoard[y][x];
@@ -113,32 +128,48 @@ public class GameBoardController {
   }
 
   /**
-   * Method for handling game over event, when a tetrimino is placed out of bounds.
+   * Handles the game over event, triggered when a Tetrimino is placed out of bounds.
    *
-   * @throws IOException due to ScoreRecorder
+   * <p>This method sets the game state to "game over," saves the player's score using the
+   * `ScoreRecorder`, and plays a game over animation, a piece is out of bounds when it is
+   * above the playable screen.
+   *
+   * @throws IOException if an I/O error occurs during score saving
    */
+
   @FXML
   public void gameOver() throws IOException {
     gameInstance.setGameOver(true);
+    //saves the players score into the score.txt file
     ScoreRecorder.saveScore(scoreLabel.getText());
-
     playGameOverAnimation();
   }
 
   /**
-   * Sends the key pressed event to game instance to utilise.
+   * Handles key press events and sends them to the game instance for processing.
    *
-   * @param event the key event
+   * <p>This method checks for specific key presses, such as the ESC key to toggle the pause screen,
+   * and passes all key events to the game instance to control the board.
+   *
+   * @param event the key event that was pressed, containing information about which key was pressed
    */
   @FXML
   public void onKeyPressed(KeyEvent event) {
+    //pauses the game if ESC is called
     if (event.getCode() == KeyCode.ESCAPE) {
       togglePauseScreen();
     }
+    //otherwise passes the players input to the game instance
     gameInstance.handleInput(event);
   }
 
-  // TODO: JAVADOCS
+  /**
+   * Toggles the display of the pause screen based on the game's current paused state.
+   *
+   * <p>If the game is currently paused, this method brings the pause screen elements to the front,
+   * updates their styles and opacity to make them visible. If the game is not paused, it sends the
+   * pause screen elements to the back and makes them transparent.
+   */
   private void togglePauseScreen(){
     if(gameInstance.isPaused()){
       basePane.requestFocus();
@@ -157,20 +188,38 @@ public class GameBoardController {
     }
   }
 
-  /** Pauses the game when the pause button is clicked. */
+  /**
+   * Pauses or resumes the game when the pause button is clicked.
+   *
+   * <p>This method toggles the visibility of the pause screen and changes the game's pause state.
+   * If the game is currently running, it will be paused; if it is paused, it will resume.
+   */
   @FXML
   public void onClickPauseButton() {
     togglePauseScreen();
     gameInstance.togglePause();
   }
 
-  // TODO: JAVADOCS
+  /**
+   * Closes the game when the exit button is clicked
+   *
+   * <p>This method is linked to the "Exit" button in the user interface. When the
+   * button is clicked, the application will terminate</p>
+   */
   @FXML
   void onClickExit(ActionEvent event) {
     System.exit(0);
   }
 
-  // TODO: JAVADOCS
+  /**
+   * restarts the game when restart is clicked.
+   *
+   * <p>When the restart button is clicked, it reloads the main menu scene,
+   * effectively restarting the application's UI to its initial state.</p>
+   *
+   * @param event The event triggered by the restart button click.
+   * @throws IOException If there is an error while loading the FXML file for the home screen.
+   */
   @FXML
   void onClickRestart(ActionEvent event) throws IOException {
     SceneManager.addScene(AppUI.MAIN_MENU, loadFxml("HomeScreen"));
@@ -244,10 +293,14 @@ public class GameBoardController {
   }
 
   /**
-   * Add position of current tetrimino ghost piece to board to support visualisation.
+   * Adds the position of the current Tetrimino's ghost piece to the game board to support visualisation.
    *
-   * @param board the game board to append ghost position to
-   * @return the updated game board
+   * <p>The ghost piece is a visual aid that shows where the Tetrimino will land if dropped directly
+   * from its current position. This method calculates the ghost piece's position and marks it on
+   * the game board</p>
+   *
+   * @param board The game board to append the ghost piece's position to
+   * @return The updated game board with the ghost piece's position added
    */
   private int[][] addGhostTetriminoPiece(int[][] board) {
     Tetrimino currentTetrimino = gameInstance.getGameBoard().getCurrentTetrimino();
@@ -269,6 +322,9 @@ public class GameBoardController {
 
   /**
    * Add position of current tetrimino piece to board to support visualisation.
+   *
+   * <p>The current piece is a visual aid to show where your current Tetrimino is,
+   * This method calculates where the current piece is and marks it on the game board</p>
    *
    * @param board the game board to append position to
    * @return the updated game board
@@ -338,7 +394,7 @@ public class GameBoardController {
     return tetriminoBlock;
   }
 
-  /** Reset game scoring labels to default. */
+  /** Reset game scoring labels to default; for initialising the game */
   private void resetLabels() {
     scoreLabel.setText("0");
     levelLabel.setText("1");
@@ -396,7 +452,13 @@ public class GameBoardController {
     animationTimeline.play();
   }
 
-  /** Handles the enabling of elements related to game over screen. */
+  /**
+   * Handles the visibility of elements related to the game over screen.
+   *
+   * <p>This method makes the game over UI elements visible and interactive when the game ends.
+   * It updates the score and high score labels to display the player's final score and the highest
+   * score recorded</p>
+   */
   private void enableGameOverElements() {
     gameOverBox.setVisible(true);
     gameOverBox.setDisable(false);
