@@ -13,8 +13,8 @@
 
 <br>
 
-This is a project created for my team's submission of Software Engineering - Software Evolution and Maintenence assignment, 
-based of the game Tetris. The objective of the game is to stack blocks and create lines horizontally in order
+This is a project created by my team as our assignment submission for Software Engineering - Software Evolution and Maintenence assignment, 
+based off the widely popular game, Tetris. The objective of the game is to stack blocks and create lines horizontally in order
 to get points.
 
 <img src="https://github.com/user-attachments/assets/8927383d-0e41-41e9-b785-52c78903a188" width="450" height="300" align="right">
