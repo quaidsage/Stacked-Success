@@ -34,7 +34,11 @@ to get points.
     
 * Designed and refactored the game to be as portable / decoupled as possible from the rest of the applcation.
   - This was done by excluding game logic inside of JavaFX related classes, and vice versa for JavaFX display logic.
-  
+
+<br>
+
+## How To Play
+
 In order to get play the game, clone the repository and type in
 
 ```
@@ -61,9 +65,10 @@ project relies on Java 17, JavaFX and the Maven wrapper as the build tool.
 
 To install Java follow this link https://www.geeksforgeeks.org/how-to-download-and-install-java-for-64-bit-machine/
 
-Contributing Guidelines can be found here:
+<br> 
 
-Project acknowledgements: <br />
+## Project Acknowledgements:
+
 Quaid Sage - quaidsage<br />
 Allan Xu - axu732<br />
 Maahir Nafis - MaahirN<br />
