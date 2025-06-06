@@ -1,6 +1,6 @@
 <div align="center">
   <h1 align="center">Stacked Success</h3>
-    <img src="https://github.com/user-attachments/assets/45483a8c-2535-4133-98ce-9fc1adadd40a" width="100" height="100">
+    <img src="https://github.com/user-attachments/assets/a78f630d-8d13-427f-8287-9baa330f6ba0" width="100" height="100">
   <p align="center">
     A faithful Tetris recreation created in Java and JavaFX
   </p>
